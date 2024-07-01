@@ -1,0 +1,71 @@
+
+grep -E 'RC_2JdYZB' /var/www/html/documents/log_files/pglogs.txt
+tail /var/log/httpd/error_log
+tail -100 /var/log/httpd/error_log
+grep -E '10 Apr 21 11.*ABV' /var/www/html/debug.txt
+grep -inR '02 Feb 23.*8006064263964887' /var/www/html/debug.txt
+tail -50 /var/www/html/debug.txt | grep CDCAS
+
+
+select stock_id, serial_number, vc_number, is_trash, trashed_date from eb_stock where serial_number in ('6030637009158205');
+select stock_id from eb_stock where serial_number in ();
+update eb_stock set is_trash = 0 where stock_id in ();
+update eb_stock set is_trash = 0, trashed_date = '2023-07-05' where stock_id in ();
+update eb_stock set is_trash = 0, trashed_date = CURRENT_TIMESTAMP where stock_id in ();
+select users_type,employee_id, dist_subdist_lcocode, parent_id from employee where employee_id in (5097,2723);
+
+
+select business_name, employee_id, parent_id, dist_subdist_lcocode,users_type from employee where employee_id in ();
+select employee_id, parent_id, dist_subdist_lcocode,users_type from employee where dist_subdist_lcocode in ();
+update employee set parent_id='' where employee_id in ();
+update employee set users_type = 'SUBDISTRIBUTOR', last_updated_date = CURRENT_TIMESTAMP where employee_id in (12951) ;
+
+
+
+
+select count(*) from eb_customer_service where last_invoice_date = '2023-06-01' and service_end_date between '2019-12-31' and '2023-05-31'
+https://sms.bcndigitaltv.com/index.php/payments/makePayment/230191
+
+1000100067375710
+
+adminidukki
+Justin@Idukki@1
+4600442A
+
+1000100067375710
+
+
+select count(distinct s.stock_id ) total
+FROM  eb_stock s 
+INNER JOIN eb_stb_types est ON s.stb_type_id = est.stb_type_id
+
+INNER JOIN backend_setups bs ON s.backend_setup_id=bs.backend_setup_id 
+INNER JOIN eb_stock_location sl ON sl.location_id=s.stock_location 
+LEFT JOIN employee e ON e.employee_id = sl.reseller_id
+-- LEFT JOIN eb_cas_inventory_logs cil ON cil.stock_id=s.stock_id AND cil.cas_inv_log_id=(select max(cas_inv_log_id) from eb_cas_inventory_logs where stock_id=s.stock_id  AND s.status=1) 
+LEFT JOIN customer_device cd FORCE INDEX (customer_device_bn_dco) ON cd.box_number=s.serial_number AND cd.device_closed_on IS NULL         
+LEFT JOIN customer c ON cd.customer_id = c.customer_id 
+
+INNER JOIN eb_models em ON s.model_number = em.model_id
+WHERE (s.status IN (1,2))    AND s.is_trash=0     AND  s.dealer_id=1;
+
+
+select count(distinct s.stock_id ) active
+FROM  eb_stock s 
+INNER JOIN eb_stb_types est ON s.stb_type_id = est.stb_type_id
+
+INNER JOIN backend_setups bs ON s.backend_setup_id=bs.backend_setup_id 
+INNER JOIN eb_stock_location sl ON sl.location_id=s.stock_location 
+LEFT JOIN employee e ON e.employee_id = sl.reseller_id
+-- LEFT JOIN eb_cas_inventory_logs cil ON cil.stock_id=s.stock_id AND cil.cas_inv_log_id=(select max(cas_inv_log_id) from eb_cas_inventory_logs where stock_id=s.stock_id  AND s.status=1) 
+INNER JOIN customer_device cd ON cd.box_number=s.serial_number AND cd.device_closed_on IS NULL         
+INNER JOIN customer c ON cd.customer_id = c.customer_id 
+
+INNER JOIN eb_models em ON s.model_number = em.model_id
+WHERE s.status=1     AND s.is_trash=0  AND s.defective_stock=0  AND s.isSurrended!=1 AND  s.dealer_id=1;
+
+
+SELECT count(*) LCO FROM employee where users_type = 'RESELLER' and status=1;
+
+
+192.168.10.105:2888 GOSPEELL CAS INTRA WORLD

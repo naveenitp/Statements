@@ -1,0 +1,45 @@
+Check the Data format in the file
+
+It should be box_number,serial_number,cas_product_id
+
+file name format - cas_reconciliation_SumaVision.csv
+
+check folder "/var/www/html/reconciliation/" exist or not ,
+cd  /var/www/html/reconciliation/
+pwd
+
+if not available then run command
+mkdir /var/www/html/reconciliation
+
+chmod -R 777 /var/www/html/reconciliation
+
+
+
+ls -larth   /var/www/html/reconciliation/cas_reconciliation_KingVon.csv
+
+ls -l /var/www/html/cas_reconciliation_log.txt
+		
+touch /var/www/html/cas_reconciliation_log.txt
+		
+
+chmod -R 777 /var/www/html/cas_reconciliation_log.txt
+
+tail /var/www/html/cas_reconciliation_log.txt
+tail -100 /var/www/html/cas_reconciliation_log.txt
+
+To check CAS Reconciliation status:
+select count(*) as completed from cas_reconciliation_data where is_checked = 1;
+select count(*) as remaining from cas_reconciliation_data where is_checked = 0;
+
+
+move file to any one app server in the path - /var/www/html/reconciliation/cas_reconciliation_Gospell.csv
+
+cron set one time :
+
+28 18 22 05 * php /var/www/html/index.php standardsyncCAS execute_manual_reconciliation ABV cut_off_date
+
+
+GOSPELL CAS END DATE NOT UPDATED TO ANY CLIENT SHOULD DO RECONCILIATION WITHOUT START DATE AND END DATE.
+IF TRIMMED VC NUMBER ARE PROVIDED THEN RECONCILIATION SHOULD BE DONE WITH TRIMMED VC NUMBERS
+
+
