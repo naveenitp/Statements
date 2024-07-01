@@ -307,6 +307,8 @@ Sales team will request us to deactivate the ezybill account due to non-payment.
 Path : Remote management - DB Server
 
 
+
+
 Some times client wants us to share the Request & Response of the transaction. For this, We use below statement,
 grep -E 'RC_3vthM1' /var/www/html/documents/log_files/pglogs.txt
 Few times PG amount will not be added in lco wallet or we will get the success status in PG reprot. But amount will not be added in LCO wallet. SO at that time we will take the request and response of that transaction and will check. If client requested, We will share that log as well.
