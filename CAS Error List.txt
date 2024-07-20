@@ -577,6 +577,8 @@ Dexin
 '0x5106'=>'Condition number error',
 '0xFFFFFFFF'=>'Unable to connect to Server'
 
+
+
 CatVision
 '0'=>'No_Error',
 '1'=>'Reserved',

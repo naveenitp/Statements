@@ -25,11 +25,11 @@ select sum(deducted_deposit_amount) as amt,d.reseller_id
 from eb_deducted_deposit_logs d
 inner join lcos l on l.employee_id = d.reseller_id
 group by d.reseller_id
-INTO OUTFILE '/tmp/deduction_records_12062024_1.csv' FIELDS TERMINATED BY ',' ENCLOSED BY '"' LINES TERMINATED BY '\r\n';
+INTO OUTFILE '/tmp/deduction_records_08072024.csv' FIELDS TERMINATED BY ',' ENCLOSED BY '"' LINES TERMINATED BY '\r\n';
 
 create temporary table deduction_records (amt decimal(13,2), reseller_id int(11));
 
-LOAD DATA INFILE '/tmp/deduction_records_12062024_1.csv'
+LOAD DATA INFILE '/tmp/deduction_records_08072024.csv'
 INTO TABLE deduction_records FIELDS TERMINATED BY ',' ENCLOSED BY '"' LINES TERMINATED BY '\r\n';
 
 
@@ -37,11 +37,11 @@ select sum(amount) as amt,l.employee_id
 from acc_lco_payments p
 inner join lcos l on l.employee_id = p.employee_id
 group by p.employee_id
-INTO OUTFILE '/tmp/payment_records12062024_1.csv' FIELDS TERMINATED BY ',' ENCLOSED BY '"' LINES TERMINATED BY '\r\n';
+INTO OUTFILE '/tmp/payment_records08072024.csv' FIELDS TERMINATED BY ',' ENCLOSED BY '"' LINES TERMINATED BY '\r\n';
 
 create temporary table payment_records (amt decimal(13,2), employee_id int(11));
 
-LOAD DATA INFILE '/tmp/payment_records12062024_1.csv'
+LOAD DATA INFILE '/tmp/payment_records08072024.csv'
 INTO TABLE payment_records FIELDS TERMINATED BY ',' ENCLOSED BY '"' LINES TERMINATED BY '\r\n';
 
 select 'EMPLOYEE ID','LCOCODE', 'LATEST DEPOSIT', 'CURRENT DEPOSIT', 'TOTAL PAID', 'TOTAL DEDUCTIONS', 'ACTUAL DEPOSIT'
@@ -52,7 +52,7 @@ inner join employee e on e.employee_id = l.employee_id
 left join deduction_records dr on dr.reseller_id = pr.employee_id
 group by pr.employee_id
 having current_deposit != actual_deposit
-INTO OUTFILE '/tmp/deposit_balance12062024_1.csv' FIELDS TERMINATED BY ',' ENCLOSED BY '"' LINES TERMINATED BY '\r\n';
+INTO OUTFILE '/tmp/deposit_balance08072024.csv' FIELDS TERMINATED BY ',' ENCLOSED BY '"' LINES TERMINATED BY '\r\n';
 
 ===============================================================================================================================================================
 

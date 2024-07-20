@@ -4,6 +4,8 @@ It should be box_number,serial_number,cas_product_id
 
 file name format - cas_reconciliation_SumaVision.csv
 
+delete from cas_sms_reconciliation where status = 2
+
 check folder "/var/www/html/reconciliation/" exist or not ,
 cd  /var/www/html/reconciliation/
 pwd
@@ -13,9 +15,10 @@ mkdir /var/www/html/reconciliation
 
 chmod -R 777 /var/www/html/reconciliation
 
+upload the file into 66 server and run the below cmd in itdesk to download into the required client server.
+cd /var/www/html/reconciliation && wget -O cas_reconciliation_Gospell.csv http://183.83.216.66:8184/CR/cas_reconciliation_Gospell.csv
 
-
-ls -larth   /var/www/html/reconciliation/cas_reconciliation_KingVon.csv
+ls -larth   /var/www/html/reconciliation/cas_reconciliation_Gospell.csv
 
 ls -l /var/www/html/cas_reconciliation_log.txt
 		
@@ -39,7 +42,13 @@ cron set one time :
 28 18 22 05 * php /var/www/html/index.php standardsyncCAS execute_manual_reconciliation ABV cut_off_date
 
 
+
+cd /var/www/html/reconciliation && wget -O cas_reconciliation_CDCAS.csv http://183.83.216.66:8184/CR/cas_reconciliation_CDCAS.csv
+
+
 GOSPELL CAS END DATE NOT UPDATED TO ANY CLIENT SHOULD DO RECONCILIATION WITHOUT START DATE AND END DATE.
 IF TRIMMED VC NUMBER ARE PROVIDED THEN RECONCILIATION SHOULD BE DONE WITH TRIMMED VC NUMBERS
+CDCAS reconciliation of deactive data will be done without start and end date
+
 
 

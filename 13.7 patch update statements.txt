@@ -24,6 +24,8 @@ alter table eb_auto_expiry_services add column is_extended_in_cas tinyint(1) def
 alter table eb_stock add column first_activation_date datetime default NULL;
 alter table eb_processes add column backend_setup_id int(11) NOT NULL default 0;
 alter table eb_processes add column priority tinyint(1) Default 0;
+alter table eb_pairing_logs add column employee_id int(11) default NULL;
+
 
 
 

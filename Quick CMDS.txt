@@ -5,6 +5,7 @@ tail -100 /var/log/httpd/error_log
 grep -E '10 Apr 21 11.*ABV' /var/www/html/debug.txt
 grep -inR '02 Feb 23.*8006064263964887' /var/www/html/debug.txt
 tail -50 /var/www/html/debug.txt | grep CDCAS
+tail /var/log/cron | grep "getBundleProductCustomerDetails"
 
 
 select stock_id, serial_number, vc_number, is_trash, trashed_date from eb_stock where serial_number in ('6030637009158205');
@@ -19,6 +20,13 @@ select business_name, employee_id, parent_id, dist_subdist_lcocode,users_type fr
 select employee_id, parent_id, dist_subdist_lcocode,users_type from employee where dist_subdist_lcocode in ();
 update employee set parent_id='' where employee_id in ();
 update employee set users_type = 'SUBDISTRIBUTOR', last_updated_date = CURRENT_TIMESTAMP where employee_id in (12951) ;
+
+
+Customer_device 
+
+http://digi.ezycable.com/apps/webservices/update_employee_imei.php?imei=344f23aa9973271b&employee_id=2630&prev_imei=bb2e7f743b2886fc
+http://app.ezycable.com/apps/webservices/update_employee_imei.php?imei=&employee_id=4179&prev_imei=945a91ed07aeec14
+https://app.ezycable.com/index.php/upgrade/queries
 
 
 
