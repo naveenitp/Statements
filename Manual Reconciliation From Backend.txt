@@ -16,9 +16,9 @@ mkdir /var/www/html/reconciliation
 chmod -R 777 /var/www/html/reconciliation
 
 upload the file into 66 server and run the below cmd in itdesk to download into the required client server.
-cd /var/www/html/reconciliation && wget -O cas_reconciliation_Gospell.csv http://183.83.216.66:8184/CR/cas_reconciliation_Gospell.csv
+cd /var/www/html/reconciliation && wget -O cas_reconciliation_ABV.csv http://183.83.216.66:8184/CR/cas_reconciliation_ABV.csv
 
-ls -larth   /var/www/html/reconciliation/cas_reconciliation_Gospell.csv
+ls -larth   /var/www/html/reconciliation/cas_reconciliation_ABV.csv
 
 ls -l /var/www/html/cas_reconciliation_log.txt
 		

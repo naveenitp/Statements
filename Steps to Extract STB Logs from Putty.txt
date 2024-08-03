@@ -1,0 +1,29 @@
+Steps to extract STB Logs from putty
+
+Change the start Date and End Date in the sql file.
+
+Change the destination folder name to the desired month and YEAR
+
+Remove the below temporary files with below commands.
+	rm -f /tmp/temp_act_logs_20240601_20240630.csv
+	rm -f /tmp/temp_deact_logs_data_test_20240601_20240630.csv
+	rm -f /tmp/temp_message_logs_data_test_20240601_20240630.csv
+	rm -f /tmp/temp_fingerprint_logs_data_test_20240601_20240630.csv
+	rm -f /tmp/temp_pairing_logs_data_test_20240601_20240630.csv
+	rm -f /tmp/temp_react_logs_data_test_20240601_20240630.csv
+	rm -f /tmp/temp_blacklist_logs_data_test_20240601_20240630.csv
+	rm -f /tmp/temp_stb_logs_export_20240601_20240630.csv
+
+Upload the sql file into the DB Server using file manager in ITDesk
+
+Log into putty and access database where the file is copied.
+
+	mysql
+	use database;
+	source /tmp/stbmonthlyLogs.sql (runs the uploaded sql file)
+
+
+
+
+Below cmd is used to delete the records 
+rm -f stb_logs_*

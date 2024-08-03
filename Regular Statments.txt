@@ -249,7 +249,7 @@ Path : Remote management - DB Server
 
 How to check the expiry services process :
 ==========================================
-set @date = '2024-05-16';
+set @date = '2024-07-31';
 select count(*) "services inserted" from eb_auto_expiry_services where reason=3 and date(created_on)=@date;
 select count(*) "services tried" from eb_auto_expiry_services where reason=3 and date(created_on)=@date and tries>0;  
 select count(*) "services tried and deactivated" from eb_auto_expiry_services where reason=3 and date(created_on)=@date and tries>0 and is_deactivated_in_cas=1;   
@@ -338,8 +338,8 @@ kill -9 id
 To know end date of the lco share.
 create temporary table percentage select max(bp_pack_percent_id) id from eb_bp_package_percent group by reseller_id,product_id;
 create index bp_pack_percent_id_bid ON percentage(id);
-Select count(*) from  eb_bp_package_percent p inner join percentage t on p.bp_pack_percent_id=t.id where to_date>='2022-12-31' and to_date<='2024-02-29';
-Select p.* from  eb_bp_package_percent p inner join percentage t on p.bp_pack_percent_id=t.id where to_date>='2022-12-31' and to_date<='2024-02-29'  limit 4;
+Select count(*) from  eb_bp_package_percent p inner join percentage t on p.bp_pack_percent_id=t.id where to_date>='2022-12-31' and to_date<='2024-07-29';
+Select p.* from  eb_bp_package_percent p inner join percentage t on p.bp_pack_percent_id=t.id where to_date>='2022-12-31' and to_date<='2024-07-29'  limit 4;
 
 Pending Expiry Services Count
 select count(1) from eb_customer_service where status=1 and service_end_date<'2023-05-12 00:00:00'
