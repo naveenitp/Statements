@@ -3,7 +3,7 @@ grep -E 'RC_2JdYZB' /var/www/html/documents/log_files/pglogs.txt
 tail /var/log/httpd/error_log
 tail -100 /var/log/httpd/error_log
 grep -E '10 Apr 21 11.*ABV' /var/www/html/debug.txt
-grep -inR '02 Feb 23.*8006064263964887' /var/www/html/debug.txt
+grep -inR '03 Feb 23.*SDA4C445096101' /var/www/html/debug.txt
 tail -50 /var/www/html/debug.txt | grep CDCAS
 tail /var/log/cron | grep "getBundleProductCustomerDetails"
 last -x shutdown reboot
@@ -26,7 +26,7 @@ update employee set users_type = 'SUBDISTRIBUTOR', last_updated_date = CURRENT_T
 Customer_device 
 
 http://digi.ezycable.com/apps/webservices/update_employee_imei.php?imei=344f23aa9973271b&employee_id=2630&prev_imei=bb2e7f743b2886fc
-http://app.ezycable.com/apps/webservices/update_employee_imei.php?imei=&employee_id=4179&prev_imei=945a91ed07aeec14
+http://app.ezycable.com/apps/webservices/update_employee_imei.php?imei=865236049635190&employee_id=3960&prev_imei=865236049635196
 https://app.ezycable.com/index.php/upgrade/queries
 
 
@@ -38,6 +38,8 @@ https://sms.bcndigitaltv.com/index.php/payments/makePayment/230191
 1000100067375710
 
 adminidukki
+
+865236049635190
 Justin@Idukki@1
 4600442A
 

@@ -5,6 +5,8 @@ It should be box_number,serial_number,cas_product_id
 file name format - cas_reconciliation_SumaVision.csv
 
 delete from cas_sms_reconciliation where status = 2
+select * from cas_sms_reconciliation where status = 2
+
 
 check folder "/var/www/html/reconciliation/" exist or not ,
 cd  /var/www/html/reconciliation/
@@ -39,7 +41,7 @@ move file to any one app server in the path - /var/www/html/reconciliation/cas_r
 
 cron set one time :
 
-28 18 22 05 * php /var/www/html/index.php standardsyncCAS execute_manual_reconciliation ABV cut_off_date
+15 17 14 08 * php /var/www/html/index.php standardsyncCAS execute_manual_reconciliation CONAX cut_off_date
 
 
 

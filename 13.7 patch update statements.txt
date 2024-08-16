@@ -48,8 +48,8 @@ update database_changes set  status=1 where id in () ;
 
 select * from patch_update_status;
 
-chmod -R 777 /var/www/html/apps/progs/abv.pl
-perl -i -pe 'y|\r||d' /var/www/html/apps/progs/abv.pl
+chmod -R 777 /var/www/html/apps/progs/gospell.pl
+perl -i -pe 'y|\r||d' /var/www/html/apps/progs/gospell.pl
 
 Pairing and Unpairing issue in eb_pairing_logs table employee_id column is missing
 desc eb_pairing_logs

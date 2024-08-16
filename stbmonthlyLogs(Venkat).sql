@@ -30,8 +30,8 @@ LEFT JOIN
 customer c ON c.customer_id=cd.customer_id AND c.dealer_id=1
 WHERE
     s.dealer_id = 1  
-    AND (cl.activation_date >= '2024-04-01 00:00:00'
-    AND cl.activation_date <= '2024-04-30 23:59:59') INTO OUTFILE '/tmp/temp_act_logs_20240601_20240630.csv' FIELDS TERMINATED BY ',' OPTIONALLY ENCLOSED BY '"' LINES TERMINATED BY '
+    AND (cl.activation_date >= '2024-06-01 00:00:00'
+    AND cl.activation_date <= '2024-06-30 23:59:59') INTO OUTFILE '/tmp/temp_act_logs_20240601_20240630.csv' FIELDS TERMINATED BY ',' OPTIONALLY ENCLOSED BY '"' LINES TERMINATED BY '
 ';
 
 select "temp_act_logs generated";
@@ -67,8 +67,8 @@ INNER JOIN eb_models em ON s.model_number = em.model_id
 LEFT JOIN customer_device cd ON cd.box_number=s.serial_number AND cd.dealer_id=1  AND (cl.activation_date >= COALESCE(cd.created_on,'0000-00-00 00:00:00') AND cl.activation_date < COALESCE(cd.device_closed_on,'3000-12-31 11:59:59'))
 LEFT JOIN customer c ON c.customer_id=cd.customer_id AND c.dealer_id=1
 INNER JOIN backend_setups bs ON bs.backend_setup_id = s.backend_setup_id AND bs.dealer_id=1
-WHERE s.dealer_id=1 AND (cl.deactivation_date >= '2024-04-01 00:00:00'
-    AND cl.deactivation_date <= '2024-04-30 23:59:59') INTO OUTFILE '/tmp/temp_deact_logs_data_test_20240601_20240630.csv' FIELDS TERMINATED BY ',' OPTIONALLY ENCLOSED BY '"' LINES TERMINATED BY '
+WHERE s.dealer_id=1 AND (cl.deactivation_date >= '2024-06-01 00:00:00'
+    AND cl.deactivation_date <= '2024-06-30 23:59:59') INTO OUTFILE '/tmp/temp_deact_logs_data_test_20240601_20240630.csv' FIELDS TERMINATED BY ',' OPTIONALLY ENCLOSED BY '"' LINES TERMINATED BY '
 ';
 
 select "deact_logs generated";
@@ -106,7 +106,7 @@ LEFT JOIN eb_pairing_logs epl ON epl.stock_id=s.stock_id AND epl.pairing_log_id=
 LEFT JOIN eb_models em ON s.model_number = em.model_id LEFT JOIN customer_device cd ON cd.box_number=s.serial_number AND cd.dealer_id=1  AND (cms.sent_on >= COALESCE(cd.created_on,'0000-00-00 00:00:00') AND cms.sent_on <= COALESCE(cd.device_closed_on,'3000-12-31 11:59:59')) 
 LEFT JOIN backend_setups bs ON bs.backend_setup_id = cm.backend_setup_id AND bs.dealer_id=1 
 LEFT JOIN customer c ON c.customer_id=cd.customer_id AND c.dealer_id=1 
-WHERE e.dealer_id=1 AND (cms.sent_on >= '2024-04-01 00:00:00' AND cms.sent_on <= '2024-04-30 23:59:59') 
+WHERE e.dealer_id=1 AND (cms.sent_on >= '2024-06-01 00:00:00' AND cms.sent_on <= '2024-06-30 23:59:59') 
 INTO OUTFILE '/tmp/temp_message_logs_data_test_20240601_20240630.csv' FIELDS TERMINATED BY ',' OPTIONALLY ENCLOSED BY '"' LINES TERMINATED BY '
 ';
 
@@ -147,7 +147,7 @@ LEFT JOIN eb_channels ch ON cf.channel_id = ch.channel_id
 LEFT JOIN backend_setups bs ON bs.backend_setup_id = cf.backend_setup_id AND bs.dealer_id=1 
 LEFT JOIN customer_device cd ON cd.customer_id = c.customer_id AND cd.dealer_id=1 AND (cf.activated_date >= COALESCE(cd.created_on,'0000-00-00 00:00:00') 
 AND cf.activated_date <= COALESCE(cd.device_closed_on,'3000-12-31 11:59:59')) WHERE cf.activated_date<>'0000-00-00 00:00:00' 
-AND cf.dealer_id=1 AND (cf.activated_date >= '2024-04-01 00:00:00' AND cf.activated_date <= '2024-04-30 23:59:59') INTO OUTFILE '/tmp/temp_fingerprint_logs_data_test_20240601_20240630.csv' FIELDS TERMINATED BY ',' OPTIONALLY ENCLOSED BY '"' LINES TERMINATED BY '
+AND cf.dealer_id=1 AND (cf.activated_date >= '2024-06-01 00:00:00' AND cf.activated_date <= '2024-06-30 23:59:59') INTO OUTFILE '/tmp/temp_fingerprint_logs_data_test_20240601_20240630.csv' FIELDS TERMINATED BY ',' OPTIONALLY ENCLOSED BY '"' LINES TERMINATED BY '
 ';
 
 select "fingerprint_logs generated";
@@ -186,7 +186,7 @@ LEFT JOIN eb_models em ON s.model_number = em.model_id
 LEFT JOIN customer_device cd ON cd.box_number = s.serial_number AND cd.dealer_id=1  AND (pl.created_on >= COALESCE(cd.created_on,'0000-00-00 00:00:00') AND pl.created_on <= COALESCE(cd.device_closed_on,'3000-12-31 11:59:59')) 
 LEFT JOIN customer c ON c.customer_id=cd.customer_id AND c.dealer_id=1 
 LEFT JOIN backend_setups bs ON bs.backend_setup_id = s.backend_setup_id AND bs.dealer_id=1 
-WHERE pl.dealer_id=1  AND (pl.created_on >= '2024-04-01 00:00:00' AND pl.created_on <= '2024-04-30 23:59:59') INTO OUTFILE '/tmp/temp_pairing_logs_data_test_20240601_20240630.csv' FIELDS TERMINATED BY ',' OPTIONALLY ENCLOSED BY '"' LINES TERMINATED BY '
+WHERE pl.dealer_id=1  AND (pl.created_on >= '2024-06-01 00:00:00' AND pl.created_on <= '2024-06-30 23:59:59') INTO OUTFILE '/tmp/temp_pairing_logs_data_test_20240601_20240630.csv' FIELDS TERMINATED BY ',' OPTIONALLY ENCLOSED BY '"' LINES TERMINATED BY '
 '; 
 
 
@@ -224,7 +224,7 @@ CASE WHEN e.users_type IN ('DEALER', 'ADMIN', 'EMPLOYEE', 'SERVICE', 'TEAMLEAD')
     LEFT JOIN eb_stock s ON s.stock_id = cl.stock_id AND s.dealer_id=1 
     LEFT JOIN eb_models em ON s.model_number = em.model_id 
     LEFT JOIN customer_device cd ON cd.box_number = s.serial_number AND cd.dealer_id=1 AND (cl.date_time_stamp >= COALESCE(cd.created_on,'0000-00-00 00:00:00') AND cl.date_time_stamp <= COALESCE(cd.device_closed_on,'3000-12-31 11:59:59')) LEFT JOIN customer c ON c.customer_id=cd.customer_id AND c.dealer_id=1 
-    LEFT JOIN backend_setups bs ON bs.backend_setup_id = s.backend_setup_id AND bs.dealer_id=1 WHERE cl.act_type='R' and cl.dealer_id=1 AND (cl.date_time_stamp >= '2024-04-01 00:00:00' AND cl.date_time_stamp <= '2024-04-30 23:59:59') INTO OUTFILE '/tmp/temp_react_logs_data_test_20240601_20240630.csv' FIELDS TERMINATED BY ',' OPTIONALLY ENCLOSED BY '"' LINES TERMINATED BY '
+    LEFT JOIN backend_setups bs ON bs.backend_setup_id = s.backend_setup_id AND bs.dealer_id=1 WHERE cl.act_type='R' and cl.dealer_id=1 AND (cl.date_time_stamp >= '2024-06-01 00:00:00' AND cl.date_time_stamp <= '2024-06-30 23:59:59') INTO OUTFILE '/tmp/temp_react_logs_data_test_20240601_20240630.csv' FIELDS TERMINATED BY ',' OPTIONALLY ENCLOSED BY '"' LINES TERMINATED BY '
 '; 
 
 
@@ -262,7 +262,7 @@ CASE WHEN e.users_type IN ('DEALER', 'ADMIN', 'EMPLOYEE', 'SERVICE', 'TEAMLEAD')
  LEFT JOIN customer_device cd ON cd.box_number = s.serial_number AND customer_device_id=(select max(customer_device_id) from customer_device where box_number = s.serial_number) 
  LEFT JOIN eb_models em ON s.model_number = em.model_id 
  LEFT JOIN backend_setups bs ON bs.backend_setup_id = s.backend_setup_id AND bs.dealer_id=1 
- LEFT JOIN customer c ON c.customer_id = cd.customer_id WHERE s.status=3 AND s.defective_stock=0 AND s.dealer_id=1 AND (s.modified_date >= '2024-04-01 00:00:00' AND s.modified_date <= '2024-04-30 23:59:59') INTO OUTFILE '/tmp/temp_blacklist_logs_data_test_20240601_20240630.csv' FIELDS TERMINATED BY ',' OPTIONALLY ENCLOSED BY '"' LINES TERMINATED BY '
+ LEFT JOIN customer c ON c.customer_id = cd.customer_id WHERE s.status=3 AND s.defective_stock=0 AND s.dealer_id=1 AND (s.modified_date >= '2024-06-01 00:00:00' AND s.modified_date <= '2024-06-30 23:59:59') INTO OUTFILE '/tmp/temp_blacklist_logs_data_test_20240601_20240630.csv' FIELDS TERMINATED BY ',' OPTIONALLY ENCLOSED BY '"' LINES TERMINATED BY '
 '; 
 
 select "blacklist_logs generated";
