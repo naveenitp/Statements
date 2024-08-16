@@ -217,7 +217,7 @@ select count(customer_service_id) total, COUNT(if(p.is_base_package=1,1,NULL)) a
 inner join eb_products p on p.product_id = scs.product_id
 inner join eb_stock s on s.stock_id = scs.stock_id
 where scs.deactivation_date is null and s.status=1 group by scs.stock_id having base_count=0
-INTO OUTFILE '/tmp/without_basepackage_08032023.csv' FIELDS TERMINATED BY ',' ENCLOSED BY '"' LINES TERMINATED BY '\r\n';
+INTO OUTFILE '/tmp/without_basepackage_13082024.csv' FIELDS TERMINATED BY ',' ENCLOSED BY '"' LINES TERMINATED BY '\r\n';
 
 S0me times client will ask us to share the stbs list which are activated with out base package. For this we are using this statment. 
 Path : Remote management - DB Server
@@ -249,7 +249,7 @@ Path : Remote management - DB Server
 
 How to check the expiry services process :
 ==========================================
-set @date = '2024-07-31';
+set @date = '2024-08-07';
 select count(*) "services inserted" from eb_auto_expiry_services where reason=3 and date(created_on)=@date;
 select count(*) "services tried" from eb_auto_expiry_services where reason=3 and date(created_on)=@date and tries>0;  
 select count(*) "services tried and deactivated" from eb_auto_expiry_services where reason=3 and date(created_on)=@date and tries>0 and is_deactivated_in_cas=1;   
@@ -612,7 +612,7 @@ Reserved Numbers blocked
 Customer_device 
 
 http://digi.ezycable.com/apps/webservices/update_employee_imei.php?imei=344f23aa9973271b&employee_id=2630&prev_imei=bb2e7f743b2886fc
-http://app.ezycable.com/apps/webservices/update_employee_imei.php?imei=&employee_id=4860&prev_imei=0eeb17c0f5be82ae
+http://app.ezycable.com/apps/webservices/update_employee_imei.php?imei=&employee_id=4543&prev_imei=466f1acdd08fb628
 https://app.ezycable.com/index.php/upgrade/queries
 2Byn;11pfK2187Y
 
@@ -735,7 +735,8 @@ alter table audit_logs add column display_name varchar(50) default NULL;
 ALTER TABLE customer_billing_adjustment ADD INDEX fk_billing_id (billing_id);
 ALTER TABLE customer_device ADD (device_id varchar(100) DEFAULT NULL,friendly_name varchar(100) DEFAULT NULL);
 alter table eb_auto_expiry_services add column remarks varchar(50) default NULL;
-f
+
+
 STBs which are activated with duplicate services.
 php /var/www/html/index.php duplicatechannelpackage getDupChannelSTB
 
@@ -919,4 +920,6 @@ select * from lovtable where setting in ('ENABLE_BULKOPERAIONS_CRON','ALLOW_MULT
 update lovtable set value=1 where setting='ENABLE_BULKOPERAIONS_CRON';
 update lovtable set value=1 where setting='ALLOW_MULTIPLE_PRODUCTS_IN_BULKOPERATIONS';
 */5 * * * * php /var/www/html/index.php bulkoperation bulkOperationscron >/dev/null 2>&1
+
+select * from eb_reseller_product_mapping where  employee_id = 3 and product_id = 476
 

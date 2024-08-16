@@ -6,6 +6,7 @@ grep -E '10 Apr 21 11.*ABV' /var/www/html/debug.txt
 grep -inR '02 Feb 23.*8006064263964887' /var/www/html/debug.txt
 tail -50 /var/www/html/debug.txt | grep CDCAS
 tail /var/log/cron | grep "getBundleProductCustomerDetails"
+last -x shutdown reboot
 
 
 select stock_id, serial_number, vc_number, is_trash, trashed_date from eb_stock where serial_number in ('6030637009158205');
@@ -73,7 +74,7 @@ INNER JOIN eb_models em ON s.model_number = em.model_id
 WHERE s.status=1     AND s.is_trash=0  AND s.defective_stock=0  AND s.isSurrended!=1 AND  s.dealer_id=1;
 
 
-SELECT count(*) LCO FROM employee where users_type = 'RESELLER' and status=1;
+SELECT count(*) RESELLER FROM employee where users_type = 'RESELLER' and status=1;
 
-
+update lovtable set value = 1 where lovid = 388
 192.168.10.105:2888 GOSPEELL CAS INTRA WORLD
