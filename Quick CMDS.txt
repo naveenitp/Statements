@@ -9,6 +9,8 @@ tail /var/log/cron | grep "getBundleProductCustomerDetails"
 last -x shutdown reboot
 
 
+select request_url,merchant_id,access_code,return_url,cancel_url,pending_trans_url from backend_setups
+
 select stock_id, serial_number, vc_number, is_trash, trashed_date from eb_stock where serial_number in ('6030637009158205');
 select stock_id from eb_stock where serial_number in ();
 update eb_stock set is_trash = 0 where stock_id in ();
