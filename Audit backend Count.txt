@@ -87,7 +87,7 @@ SELECT    count(distinct c.customer_id) cnt
 
 As on date Deactive 
 ======================
-SELECT CONCAT( '\'',s.serial_number),
+SELECT CONCAT( '\'',s.serial_number) as serial_number,
 CONCAT('\'',CASE bs.use_mac WHEN '1' THEN s.mac_address ELSE s.vc_number END) AS mac_vc_number,
 COALESCE(REPLACE(c.customer_account_id, '-', ''),'NA')crf_number,
 COALESCE( CONCAT( c.first_name, ' ', c.last_name ) , 'NA' ) customer_name,sl.location_name,
@@ -123,7 +123,7 @@ INTO OUTFILE '/tmp/deactive_13Jun2024.csv'  FIELDS TERMINATED BY ',' ENCLOSED BY
 
 
 ============================================As on date Active=============================================================================
-select s.serial_number,s.vc_number AS mac_vc_number,group_concat(CASE p.alacarte WHEN 1 THEN CONCAT(p.pname,'( Alacarte )') ELSE p.pname END SEPARATOR ', ') as package_names,scs.activation_date as activation_time, CONCAT(c.first_name,' ',coalesce(c.last_name,'')) as customer_name,COALESCE(concat(c.address1,'',c.address2,'',c.address3),'NA') as Address
+select CONCAT( '\'',s.serial_number) as serial_number,CONCAT('\'',CASE bs.use_mac WHEN '1' THEN s.mac_address ELSE s.vc_number END) AS mac_vc_number,group_concat(CASE p.alacarte WHEN 1 THEN CONCAT(p.pname,'( Alacarte )') ELSE p.pname END SEPARATOR ', ') as package_names,scs.activation_date as activation_time, CONCAT(c.first_name,' ',coalesce(c.last_name,'')) as customer_name,COALESCE(concat(c.address1,'',c.address2,'',c.address3),'NA') as Address
 FROM eb_stock_cas_services scs
 INNER JOIN eb_products p ON p.product_id=scs.product_id
 INNER JOIN eb_stock s ON s.stock_id = scs.stock_id -- AND s.is_trash=0 AND s.isSurrended!=1 AND s.defective_stock=0
