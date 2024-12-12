@@ -1,0 +1,952 @@
+sh /root/ha.sh
+Usually we will check this at the time of application slowness to know the current connections info. In the Coloum name scur, If the count reach above 100 then this should be inform to higher team i.e, Admin or keep in installation team group. 
+Path : Run Command  - Load balancer. 
+
+ps aux | grep php
+ps aux | grep cas_re_deactivation_process_execute
+To know the running crons info. Some times crons will be struck. Due to this that particular cron operation will not work untill we remove the cron. 
+Path : Run Command  - Application(In which cron jobs are available)
+
+CAS Reconciliation Status
+select count(1) from cas_reconciliation_data;
+
+lscpu - Gives the Hardware Details
+
+
+To check whether directory is created or not
+cd  /var/www/html/reconciliation/
+pwd
+
+free -h Gives the Ram Details
+To clear caches when application is slow
+sync; echo 1 > /proc/sys/vm/drop_caches 
+free -h
+df -h disk size
+cat /sys/block/sda/queue/rotational 0-ssd 1-hdd
+uptime shows the server uptime
+
+SHOW OPEN TABLES WHERE In_use > 0
+To know the open tables info. Such as we will check this to know are their any lock tables or not. If their, Will inform to the team. 
+Path : Remote management - DB Server
+
+sed   -i   's/sshd/#sshd/g'   /etc/hosts.deny
+cat    /etc/hosts.deny
+cat /var/log/httpd/error_log | grep -i "modsec"
+wget http://172.168.16.211:8080/cas/services/Castle?wsdl
+
+select * from eb_static_reports where status=1
+To know the crons which are running with the status New. We will check this at the time of application slowness. 
+Path : Remote management - DB Server
+
+To disable a menu from UI.
+select * from eb_menu where menu_name = 'Taxes';
+update eb_menu set status = 0 where menu_name = 'Taxes';
+
+
+delete from eb_static_reports where status=1
+To delete the crons which are running with status 1. Some times, Static reprot will be in status New for few days. By using above statement, We can delete that. And also we will delete the reprots with the status 1 when their is application slowness. 
+Path : Remote management - DB Server
+
+Delete from eb_static_reports where statis_report_id=24590 
+To delete any specific static report such as, Their might be any reprot which is in New status for couple of days. 
+Path : Remote management - DB Server
+
+tail /var/log/httpd/error_log
+tail -100 /var/log/httpd/error_log
+To check the httpd logs in app servers. We will check this logs when ever we get any php errors, forbidden error etc. 
+Path : Run Command  - Application
+
+To check OSD Messaging from backend
+SELECT CONCAT('\'',ecm.mac_id) as serial_number,ecm.sent_on,bs.display_name,ecm.created_by,ecm.stock_location
+from eb_cas_msg_sent_to ecm
+INNER JOIN  backend_setups bs ON bs.backend_setup_id = ecm.backend_setup_id
+where ecm.sent_on BETWEEN '2024-02-04 00:00:00' AND '2024-02-04 23:59:59'
+INTO OUTFILE '/tmp/osd_04th_feb.csv'
+FIELDS TERMINATED BY ','
+ENCLOSED BY '"'
+LINES TERMINATED BY '\n';
+
+
+grep -E '10 Apr 21 11.*ABV' /var/www/html/debug.txt
+To check the cas debug logs on any particulat date/time/cas.
+Path : Run Command  - Application
+
+grep -E 'RC_gH8b1X' /var/www/html/documents/log_files/pglogs.txt
+To check the payment debug logs.
+
+grep -inR '02 Feb 23.*8006064263964887' /var/www/html/debug.txt
+To Check grep logs for particular date
+
+tail -50 /var/www/html/debug.txt | grep CDCAS
+To check the debug logs of any particular cas. We can change the value depends up on our requirement. 
+Path : Run Command  - Application
+
+update lovtable set value=1 where setting='ENABLE_EXPIRY_SERVICES_ACTIVATION' - 
+To enable/disable renewal option
+Path : Remote management - DB Server
+
+update eb_products set is_base_package=1 where product_id=196;
+To update base pack for any package. We will get the requests from the client that we have created the package instead of Addon we have created Base package. For these, We are using the above statement. Base package 1 = To enable base package. Base package =0 to remove a package from Base package. Product_Id is package edit id. 
+Path : Remote management - DB Server
+
+update eb_products set alacarte=0 where product_id=;
+To update alcarte pack for any package. We will get the requests from the client that we have created the alcarte package instead of Boquet we have created Base package. For these, We are using the above statement. alcarte package 1 = To enable alcarte package. Alcarte package =0 to remove a package from alcarte package to make it addon. Product_Id is package edit id. 
+Path : Remote management - DB Server
+
+select * from lovtable where setting = 'VC_EDIT';
+update lovtable set value = 0 where lovid = 7070;
+To enable VC Number Edit option value = 1 to enable 0 to disable.
+
+CHILD
+update lovtable set value=90 where setting='USER_PASSWORD_EXPIRY_DAYS' and dealer_id=1;
+We will get requests from the client to extend the mandatory password change policy. Here value=90 is days. 
+Path : Remote management - DB Server
+
+Select * from backend_setups; Here we will get the cas server backend set up id.
+update eb_stock set backend_setup_id = 1 where stock_id in ()
+update eb_all_vcs set backend_setup_id=2 where vc_number='8009199005233865'; 
+To update the server type for any particular VC. Select * from backend_setups; Here we will get the cas server backend set up id.
+
+update employee set password=MD5('bajarangiadmin'),additional_password=MD5('bajarangiadmin') where employee_id=1;
+update employee set password=MD5('Singh@1212') where employee_id=1;
+
+
+
+delete from backend_setups where backend_setup_id=3 ;
+To delete cas. 
+
+update eb_stock set backend_setup_id=5 where serial_number='174711C9D1E1'
+To change the stbs server type. backend_setup_id=5 is cas backend setup id. 
+Path : Remote management - DB Server
+
+select stock_id, is_trash from eb_stock where serial_number in('14E1000012BB');
+update eb_stock set is_trash=0 where stock_id in(767210);
+
+
+update eb_all_vcs set is_trash=0 where vc_number='1551172717DE';
+To unscrap the VC. is_trash=0 is to unscrap the VC and is_trash=1 is to to scrap the VC. 
+Path : Remote management - DB Server
+
+
+
+To unscrap the stb. is_trash=0 is to unscrap the STB and is_trash=1 is to to scrap the STB. 
+Path : Remote management - DB Server
+
+select * from acc_lco_payment where transaction_no = 'TR037781';
+update acc_lco_payment set employee_id = '' where transaction_no = 'TR037781';
+To change the lco payment if the payment is done to wrong lco after changing the transaction amount should be deducted from wrong lco entry and amount should be added to the new lco using the below query to deduct use deposit_amount - amount to add deposit_amount + amount.
+
+update employee set deposit_amount=deposit_amount+2000 where employee_id=1055
+To add the amount from backend for the user. Few times, in all the reports PG transaction will be success. But amount will not be added in lco wallet. 
+Path : Remote management - DB Server
+
+
+select backend_setup_id,display_name,hostname_ip,global_osd,global_finger_print,scroll_type  from backend_setups
+update backend_setups set global_finger_print=1,global_osd=1,scroll_type=1 where backend_setup_id in (1,4);
+To enable global osd, FP, Scroll for any cas. This will be useful at the time of audits. 
+Path : Remote management - DB Server
+
+update eb_products set cas_product_id='1' where product_id=87;
+cas_product_id='5162    new product id     and product_id=1001    edit id
+To update the cas product id. Some time client will request us to change the cas product id. 
+Path : Remote management - DB Server
+
+
+update lovtable set value = 1 where lovid=278;(To edit service extension quantity setting = SHOW_SERVICE_EXTENSION)
+select * from lovtable where setting = 'SHOW_SERVICE_EXTENSION';
+To enable service extension quantity in add service page such as 1-12 quantity.
+Path : Remote management - DB Server
+
+
+delete from cas_re_deactivation_data where process_id = '';
+delete from cas_re_deactivation_data where process_name != '' and status = 2
+Some times, Re-Deactivation cron will struck. At that time we will use above statement to delete that record. We can also coordinate with Satyam on this. As of now we are doing this for SSC client only. 
+Path : Remote management - DB Server
+
+
+update eb_products set validity_days_type_id=3 where product_id='8641'; (1- Monthly, 2 - Yearly, 3 - Days).
+To change the product validity. SOme times client will create the package validty wrongly. TO correct it we are using this command. 
+Path : Remote management - DB Server
+update eb_products set monthly_or_yearly=0 where product_id=55555555;(0- Monthly, 1 - Yearly).
+base price validity
+
+select * from eb_cas_operation_reasons where reason_type=2;
+select * from eb_cas_operation_reasons where reason_type=2 and enable_bill_edit=1;
+select  reason_id ,reason, enable_bill_edit=1 from eb_cas_operation_reasons where reason_type=2 and enable_bill_edit=1;
+To know for which reasons Billedit report is present
+
+select cas_server_type,display_name,backend_setup_id from backend_setups where setup_for=5;
+update backend_setups set sl_no_max='16',sl_no_min='5',max_vc_length='16',min_vc_length='10' where backend_setup_id=1;
+To update the serial/VC no lenght. This will be helpful at the time when we have integrated the new cas to the client. 
+Path : Remote management - DB Server
+
+
+select employee_id, parent_id from employee where employee_id in (7671)
+update employee set parent_id='11679' where employee_id in (11239,10799);
+To tag the lco/lcos to db/sdb. This is a common request we will be getting from all the clients. major clients SSC & Subhodaya. 
+Path : Remote management - DB Server
+
+update eb_cas_operation_reasons set follow_hierarchy=1 where reason_id=15;(Deactivated by MSO)
+To enable the hierarchy for any particulat reason. 
+Path : Remote management - DB Server
+
+update lovtable set value='170000' where setting='MAX_CUSTOMERS';
+To increase the stbs count. SOme times we will get the request from Sales team to increase the stbs count. 
+Path : Remote management - DB Server
+
+
+update lovtable set value=1 where setting='ENABLE_BULKOPERAIONS_CRON';
+To enable bulk operations cron process. 
+Path : Remote management - DB Server
+
+update lovtable set value=1 where setting='ALLOW_MULTIPLE_PRODUCTS_IN_BULKOPERATIONS';
+To allow mulitiple products in bulk operations page. 
+Path : Remote management - DB Server
+
+update lovtable set value=1 where setting='ALLOW_DUPLICATE_CHANNELS';
+To allow duplicate channels. Few clients will request us to allow duplicate channels in their packages. 
+Path : Remote management - DB Server
+
+
+update  paymenttype set status=0   where idpaymenttype= 9 
+To disable Payment Gateway
+
+To find products with Apply Auto Extension Option No
+select sku, product_property, product_id from eb_products where product_property = 2
+
+http://sms.malnadinfotech.com/index.php/stbs/bulk_surrender
+
+
+STB activated without base package 
+================================================
+select count(customer_service_id) total, COUNT(if(p.is_base_package=1,1,NULL)) as base_count,CONCAT("'",s.serial_number),CONCAT("'",s.vc_number) ,scs.stock_id from eb_stock_cas_services scs
+inner join eb_products p on p.product_id = scs.product_id
+inner join eb_stock s on s.stock_id = scs.stock_id
+where scs.deactivation_date is null and s.status=1 group by scs.stock_id having base_count=0
+INTO OUTFILE '/tmp/without_basepackage_13082024.csv' FIELDS TERMINATED BY ',' ENCLOSED BY '"' LINES TERMINATED BY '\r\n';
+
+S0me times client will ask us to share the stbs list which are activated with out base package. For this we are using this statment. 
+Path : Remote management - DB Server
+
+To kill long running querys.
+=============================
+select concat('KILL ',id,';') from information_schema.processlist where user='haproxy_root' and time >  10 and COMMAND='Query' and INFO like 'SELECT %' into outfile '/tmp/2.txt';
+source /tmp/2.txt;
+
+To spool the long running queries. 
+Path : Remote management - DB Server
+
+update eb_products set is_taxable=1 where product_id in (467,468);
+To enable tax for the product. 
+Path : Remote management - DB Server
+
+Steup-1	
+select * from lovtable where setting='BILL_EDIT_AFTER_DEACTIVATION';	
+update lovtable where set value=2 where setting='BILL_EDIT_AFTER_DEACTIVATION';	
+For Only for Recurring Use Value=1, For Only One time Package Use Value=2. For both Recurring and One time package use Value=3
+To enable bill edit option we are using this statment. 
+Path : Remote management - DB Server
+
+select enable_bill_edit,reason,reason_type from eb_cas_operation_reasons where reason_type=2;
+update eb_cas_operation_reasons set enable_bill_edit=1 where reason='Deactivate By MSO';
+To enable bill edit option for specific reason.
+
+update accon_reports set dealer=15,employee=15,admin=15,reseller=15,status=1 where report_name='BILLEDIT_REPORT';
+To enable bill edit reprot. 
+Path : Remote management - DB Server
+
+How to check the expiry services process :
+==========================================
+set @date = '2024-08-07';
+select count(*) "services inserted" from eb_auto_expiry_services where reason=3 and date(created_on)=@date;
+select count(*) "services tried" from eb_auto_expiry_services where reason=3 and date(created_on)=@date and tries>0;  
+select count(*) "services tried and deactivated" from eb_auto_expiry_services where reason=3 and date(created_on)=@date and tries>0 and is_deactivated_in_cas=1;   
+select * from eb_auto_expiry_services where reason=3 and date(created_on)=@date and tries>0 and is_deactivated_in_cas=0 limit 10;  
+
+Some times expiry services cron will run slow or some times it will not run. To get the details, We are using above statments. 
+Path : Remote management - DB Server
+
+To Enable Total Expiry Services Report in Dasboard
+==========================================================
+
+INSERT INTO dashboard(name,user_type,status,order_by,created_by,creaated_date,name_alias,dealer_id)VALUES
+('Total Expiry Services','DEALER',1,2,1,NOW(),'total_expiry_services',1),
+('Total Expiry Services','ADMIN',1,2,1,NOW(),'total_expiry_services',1),
+('Total Expiry Services','EMPLOYEE',1,2,1,NOW(),'total_expiry_services',1),
+('Total Expiry Services','RESELLER',1,2,1,NOW(),'total_expiry_services',1);
+
+We have an option to view the expiry services details on the dashboard. To enable this option we will use above statment. 
+
+
+To  check customer dues :
+==============================
+DB: ezybill_saicom| CMD:select count(*) from eb_customer_extension where customer_due<0 
+                          
+ +----------+
+| count(*) |
++----------+
+|     1083 |
++-----------     
+                   
+DB: ezybill_saicom| CMD:select count(*) from eb_customer_extension where customer_due<>0 
+
++----------+
+| count(*) |
++----------+
+|     2696 |
++----------+
+
+There are few customers with -ve and +ve dues. To get the count we are using this statment. 
+Path : Remote management - DB Server
+
+
+select sum(total_amount) from eb_customer_extension where customer_due<0; 
+select sum(total_amount) from eb_customer_extension where customer_due<>0; 
+To get the sum of -ve/+ve customers sum. 
+Path : Remote management - DB Server
+
+update dealer set status=0 where status=1;(To deactivate the account)
+To deactive the ezybill account. This request will come from Sales team.
+
+update dealer set status=1 where status=0; (To activate the account)
+To activate the ezybill account. 
+
+Sales team will request us to deactivate the ezybill account due to non-payment. We are using above 2 statments to do this activity. 
+Path : Remote management - DB Server
+
+
+
+
+Some times client wants us to share the Request & Response of the transaction. For this, We use below statement,
+grep -E 'RC_3vthM1' /var/www/html/documents/log_files/pglogs.txt
+Few times PG amount will not be added in lco wallet or we will get the success status in PG reprot. But amount will not be added in LCO wallet. SO at that time we will take the request and response of that transaction and will check. If client requested, We will share that log as well.
+Path : Run Command  - Application servers. 
+
+Auto Customer Payment 
+
+update lovtable set value=1 where setting='CUSTOMER_PAYMENT_AFTER_DEDUCTION';
+update eb_cas_operation_reasons set customer_payment=1 where status=1;
+
+select statis_report_id, report_name, created_on, status from eb_static_reports where status = 1
+To Kill Bulk Operations 
+set @trans_id = '1732785936291';
+select count(1) total  from eb_bulk_act_deact_file_content where trans_id = @trans_id;
+select count(*) failed from eb_bulk_act_deact_file_content where trans_id = @trans_id and tries>0 and success_in_cas=0;
+select count(*) pending from eb_bulk_act_deact_file_content where trans_id = @trans_id and tries=0 and success_in_cas=0;
+select count(*) success from eb_bulk_act_deact_file_content where trans_id = @trans_id and tries>0 and success_in_cas=1;
+select serial_number,vc_mac_number,trans_id,remarks,success_in_cas,tries from eb_bulk_act_deact_file_content where  trans_id = @trans_id and tries>0 and success_in_cas=0;
+update eb_bulk_act_deact_file_content set upload_date=now() where trans_id='1727271947578';
+update eb_processes set status=1,start_time=now() where trans_id = '1727271947578';
+update eb_processes set status=3,end_time=now() where trans_id = '1709863000832';
+delete from eb_processes where operation_id=0 and start_time between '2019-09-20 00:00:00' and '2023-12-31 23:59:59' and status=1;
+if the product_id is 0 then it is box deactivation
+
+
+To kill a process in ps aux | grep php 
+kill -9 id
+
+To know end date of the lco share.
+create temporary table percentage select max(bp_pack_percent_id) id from eb_bp_package_percent group by reseller_id,product_id;
+create index bp_pack_percent_id_bid ON percentage(id);
+Select count(*) from  eb_bp_package_percent p inner join percentage t on p.bp_pack_percent_id=t.id where to_date>='2022-12-31' and to_date<='2024-07-29';
+Select p.* from  eb_bp_package_percent p inner join percentage t on p.bp_pack_percent_id=t.id where to_date>='2022-12-31' and to_date<='2024-07-29'  limit 4;
+
+Pending Expiry Services Count
+select count(1) from eb_customer_service where status=1 and service_end_date<'2023-05-12 00:00:00'
+
+update lovtable set value=0 where setting='ENABLE_TRAI_COMPLAINT'
+
+
+describe tablename - gives all the info on the table 
+
+https://bhoomikacable.in/index.php/mso_share_waier/file_upload_mso_waier - To Waier MSO Share
+
+
+To know the client software version (Patch)
+select * from patch_update_status; 
+
+select * from eb_plugins
+delete from eb_plugins where plugins_id=2
+
+If duplicate products are found in product list
+
+
+select count(1) cnt,employee_id,rollup_month from lco_payable_rollup where rollup_month ='2022-12-01' group by employee_id,rollup_month having cnt>1;
+
+Srinivas K, 13 min
+select * from cas_re_deactivation_data where remarks like  '%Re-deactivation process started%';
+
+update cas_re_deactivation_data set status=3,remarks = "Re-deactivation process stopped ,due to customer request" where sno = 11912308;
+
+Bootup Channel URL: http://sms.saivisiondigital.com/index.php/bootupchannel/DefaultBootup
+
+
+Password expiry date change
+update lovtable set value=365 where setting='USER_PASSWORD_EXPIRY_DAYS' and dealer_id=1;
+
+To enable employee under LCO
+update lovtable set value=1 where setting ='ENABLE_RESELLER_EMPLOYEES';
+
+select backend_setup_id,display_name,hostname_ip,global_osd,global_finger_print,scroll_type  from backend_setups
+
+To modify the hard cas to soft cas of particular STB when wrongly entered
+select not_paired_in_cas, is_card_less from eb_stock where serial_number IN ()
+update eb_stock set not_paired_in_cas=0,is_card_less=1 where serial_number IN ( 00798601285, 00798579980, 00798585699, 00774347200)
+
+
+To get Deducted Amount and Total Amount
+set @id=12956;
+select employee_id,deposit_amount from employee where employee_id=@id;
+select sum(amount) from acc_lco_payments  where employee_id=@id;
+select sum(deducted_deposit_amount) from eb_deducted_deposit_logs  where reseller_id=@id;
+
+
+To know the threshold value
+select * from lovtable where setting like'%PRODUCT_ACTIVATION_THRESHOLD%'and dealer_id=1;
+
+To delete locked files 
+ls /var/www/html/documents/lock_bulkoperation.lock
+ls /var/www/html/documents/static_reports.lock
+rm -f /var/www/html/documents/static_reports.lock
+rm -f /var/www/html/documents/lock_bulkoperation.lock
+
+mv oldfilename newfilename Renaming the file name
+
+Total Boxes: 
+
+select count(distinct s.stock_id ) total
+FROM  eb_stock s 
+INNER JOIN eb_stb_types est ON s.stb_type_id = est.stb_type_id
+
+INNER JOIN backend_setups bs ON s.backend_setup_id=bs.backend_setup_id 
+INNER JOIN eb_stock_location sl ON sl.location_id=s.stock_location 
+LEFT JOIN employee e ON e.employee_id = sl.reseller_id
+-- LEFT JOIN eb_cas_inventory_logs cil ON cil.stock_id=s.stock_id AND cil.cas_inv_log_id=(select max(cas_inv_log_id) from eb_cas_inventory_logs where stock_id=s.stock_id  AND s.status=1) 
+LEFT JOIN customer_device cd FORCE INDEX (customer_device_bn_dco) ON cd.box_number=s.serial_number AND cd.device_closed_on IS NULL         
+LEFT JOIN customer c ON cd.customer_id = c.customer_id 
+
+INNER JOIN eb_models em ON s.model_number = em.model_id
+WHERE (s.status IN (1,2))    AND s.is_trash=0     AND  s.dealer_id=1;
+
+Active boxes: 
+
+select count(distinct s.stock_id ) active
+FROM  eb_stock s 
+INNER JOIN eb_stb_types est ON s.stb_type_id = est.stb_type_id
+
+INNER JOIN backend_setups bs ON s.backend_setup_id=bs.backend_setup_id 
+INNER JOIN eb_stock_location sl ON sl.location_id=s.stock_location 
+LEFT JOIN employee e ON e.employee_id = sl.reseller_id
+-- LEFT JOIN eb_cas_inventory_logs cil ON cil.stock_id=s.stock_id AND cil.cas_inv_log_id=(select max(cas_inv_log_id) from eb_cas_inventory_logs where stock_id=s.stock_id  AND s.status=1) 
+INNER JOIN customer_device cd ON cd.box_number=s.serial_number AND cd.device_closed_on IS NULL         
+INNER JOIN customer c ON cd.customer_id = c.customer_id 
+
+INNER JOIN eb_models em ON s.model_number = em.model_id
+WHERE s.status=1     AND s.is_trash=0  AND s.defective_stock=0  AND s.isSurrended!=1 AND  s.dealer_id=1;
+
+Active LCO Count
+
+SELECT count(*) LCO FROM employee where users_type = 'RESELLER' and status=1;
+
+
+5 14 1 3 * php /var/www/html/index.php report_scheduler report_scheduler_cron_job 2023-02
+
+To check LCO Shares
+	create temporary table percentage select max(bp_pack_percent_id) id from eb_bp_package_percent group by reseller_id,product_id;
+	create index bp_pack_percent_id_bid ON percentage(id);
+	Select count(*) from  eb_bp_package_percent p inner join percentage t on p.bp_pack_percent_id=t.id where to_date>='2023-12-01' and to_date<='2024-02-01';
+	Select p.* from  eb_bp_package_percent p inner join percentage t on p.bp_pack_percent_id=t.id where to_date>='2023-12-01' and to_date<='2024-02-01'  limit 4;
+
+
+To add bundle reconciliation crons to clear the old bundle reconciliation record
+select * from eb_product_combo_details limit 5;
+select * from bundle_reconciliation_request;
+update  bundle_reconciliation_request set is_success =1 where is_success=0;
+select * from eb_processes where trans_id in('T5facc929f1855 ','T5facc929f1855','T5fb3977f62d77','T5fbfbea73b888','T5fdcbb505f8dd ');
+update eb_processes set status=3 where trans_id in('T5facc929f1855 ','T5facc929f1855','T5fb3977f62d77','T5fbfbea73b888','T5fdcbb505f8dd ');
+0 3 * * * php /var/www/html/ezybillreleases/1.4.13.6/rc1_final/app/index.php BundleReconciliation getBundleProductCustomerDetails -- local
+30 3 * * * php /var/www/html/ezybillreleases/1.4.13.6/rc1_final/app/index.php BundleReconciliation bundleReconciliationProcess
+00 */1 * * * php /var/www/html/index.php BundleReconciliation getBundleProductCustomerDetails >/dev/null 2>&1
+20 */1 * * * php /var/www/html/index.php BundleReconciliation bundleReconciliationProcess >/dev/null 2>&1
+is_success=1 -completed
+
+
+select count(*) from customerotpmap;
+ Selfcare Application
+select count(1) from employee where imei > 0 limit 10;
+LCO Mobile App
+
+select * from eb_validation_values where dealer_id = 1; 
+To know the current NCF value
+
+CALL spProcessLCOPayableRollupDaily(100, '2017-12-01', DATE_FORMAT(NOW(), '%Y-%m-01'));
+CALL spPopulateCustomerExtension(NULL, 1682, NULL)
+
+Ledger Report double entry
+CALL spProcessLCOPayableRollupMonthly(3463, '2017-12-01', DATE_FORMAT(NOW(), '%Y-%m-01'));
+
+Disabling the deactivation reason for a LCO:
+select * from eb_cas_operation_reasons where reason_type=2;
+update eb_cas_operation_reasons set show_for_lco =0  where reason_id=15;
+
+
+To view count of active services based on package
+select count(*) from eb_products ep inner join eb_stock_cas_services cs on ep.product_id=cs.product_id 
+inner join eb_customer_service ec on ec.customer_service_id=cs.customer_service_id
+inner join backend_setups bs on bs.backend_setup_id=ep.backend_setup_id where ep.pname='ABN' and bs.display_name='I' and ec.status=1;
+
+To delete long running static reports
+select * from eb_static_reports  where filter_string like  '%Date : 2022-08-03 , Stb Status : Active%'
+delete from eb_static_reports  where statis_report_id in(72104,72107,72109);
+delete from eb_static_reports  where created_date between '2024-06-01 00:00:00' and '2024-06-31 23:59:59' ;
+
+Statice report Status
+
+1 --- New
+2 --- downloaded
+3 --- Failed
+4 --- Running
+
+To Integrate New CAS from backend softcas
+INSERT INTO backend_setups(
+setup_for,
+dealer_id,
+hostname_ip,
+cas_server_type,
+display_name,
+use_mac,
+left_trim,
+right_trim,
+pairing,
+blacking,
+sl_no_min,
+sl_no_max,
+min_vc_length,
+max_vc_length,
+global_finger_print,
+global_osd,
+global_email,
+scroll_type)
+VALUES(5,1,'172.168.16.195:7364?opid=1286~stbopid=0~smsid=1~apiver=24~usesuperosd=1~sleepms=10~cardless=1',
+'CDCAS','NSTV_SOFT',0,0,0,0,0,16,16,16,16,1,1,1,1);
+
+To increase Customer Base
+update lovtable set value='400000' where setting='MAX_CUSTOMERS'
+select * from lovtable where setting = 'MAX_CUSTOMERS'
+
+To know the pricing structure of the client
+select count(*) as onetime from eb_products where pricing_structure_type=1;
+select count(*) as recurring from eb_products where pricing_structure_type=2;
+
+
+select ep.pname, cs.vc_number,cs.deactivation_date,ec.customer_service_id from eb_products ep inner join eb_stock_cas_services cs on ep.product_id=cs.product_id 
+inner join eb_customer_service ec on ec.customer_service_id=cs.customer_service_id
+inner join backend_setups bs on bs.backend_setup_id=ep.backend_setup_id where ep.pname='NULL241' and bs.display_name='TOPREAL' and ec.status=1;
+
+select customer_id,service_end_date,status from eb_customer_service where customer_service_id=972771;
+
+update eb_customer_service  set status=0 where customer_service_id=972771;
+update eb_customer_products  set status=0 where customer_service_id=52225749;
+
+To Deactivate a channel
+select pname,ec.channel_name, epc.channel_id from eb_product_channels as epc join eb_products as ep on epc.product_id = ep.product_id 
+join eb_channels ec on ec.channel_id = epc.channel_id where epc.channel_id in();
+update eb_channels set status=0 where channel_id=48505;
+
+To see whether LCO Payment Adjustment is enabled or not
+SELECT user_id, emp.users_type, emp.dist_subdist_lcocode
+FROM  eb_stb_authentication AS auth join employee as emp on emp.employee_id = auth.user_id
+WHERE auth.stb_module = 'LCO_PAYMENT_ADJUSTMENT'
+AND auth.access = 1
+AND EXISTS (
+    SELECT 1
+    FROM employee AS emp
+    WHERE emp.users_type IN ('distributor', 'subdistributor')
+);
+
+SELECT COUNT(*) AS count_records
+FROM eb_stb_authentication AS auth
+WHERE auth.stb_module = 'LCO_PAYMENT_ADJUSTMENT'
+AND auth.access = 1
+AND EXISTS (
+    SELECT 1
+    FROM employee AS emp
+    WHERE emp.users_type IN ('distributor', 'subdistributor')
+)
+
+select * from cronjob_log order by log_id desc limit 5
+
+BillEdit Reasons
+select enable_bill_edit,reason,reason_type from eb_cas_operation_reasons where reason_type=2;
+
+To enable export option in STB Management
+update lovtable set value=1 where setting='SHOW_EXCEL_REPORT_STB_MANAGEMENT';
+
+Wifi Password 
+netsh wlan show profile name=itp key=clear
+
+Card to cardless
+select not_paired_in_cas, is_card_less from eb_stock where serial_number IN ( 00811475554)
+update eb_stock set not_paired_in_cas=0,is_card_less=1 where serial_number IN ( 00798601285, 00798579980, 00798585699, 00774347200)
+
+To get generated OTP while selfcare portal login
+select * from customerotpmap order by idcustomerotpmap desc limit 5
+select * from customerotpmap where mobile='';
+
+TO check prepaid bill generation
+select count(*) from acc_billing where created_by='-1' and bill_month='2023-09-01';
+
+df -h (Disk space)
+free -h (Ram size)
+lscpu (Processer Info)
+ip a ( IP Info )
+cat /etc/system-release
+cd  /var/www/html/reconciliation/
+pwd 
+ls -larth   /var/www/html/reconciliation/cas_reconciliation_Gospell.csv to check file modified date/time
+
+To check lco balance amount
+select sum(amount) from acc_lco_payments where employee_id=100
+select sum(deducted_deposit_amount) from eb_deducted_deposit_logs where reseller_id=100
+select 212558.27-207677.99 
+select deposit_amount from employee where employee_id=100
+
+To enable topup for single employee from backend (change 201 to employee_id)
+INSERT INTO employee_pg_mapping (employee_id,payment_gateway_id,backend_setup_id,status,lco_mapped) VALUES (201,30,7,1,1);
+
+List of Renewal Boxes
+select distinct stock_id,vc_number,customer_id from eb_customer_service cs inner join eb_stock_cas_services scs on scs.customer_service_id=cs.customer_service_id inner join eb_products p on p.product_id=scs.product_id where service_end_date>'2023-07-14 00:00:00' and reason=10 and p.backend_setup_id=1 limit 10
+
+Reserved Numbers blocked 
+[Wed Jul 26 10:58:28 2023] [error] [client 127.0.0.1] ModSecurity: Access denied with code 403 (phase 2). Pattern match "(?i:(?:^(-0000023456|4294967295|4294967296|2147483648|2147483647|0000012345|-2147483648|-2147483649|0000023456|2.2.60738585072007e-308|1e309)$))" at ARGS:search_stb. [file "/etc/httpd/modsecurity.d/activated_rules/modsecurity_crs_41_sql_injection_attacks.conf"] [line "224"] [id "9812538"] [msg "Looking for intiger overflow attacks, these are taken from skipfish, except 2.2.60738585072007e-308 is the \\"magic number\\" crash"] [data "Matched Data: 0000012345 found within ARGS:search_stb: 0000012345"] [severity "CRITICAL"] [tag "OWASP_CRS/WEB_ATTACK/SQLI"] [hostname "sms.sreedevidigital.in"] [uri "/index.php/search_cutomer_stb/customer_or_stb"] [unique_id "ZMCu-H8AAAEAAVtAgXkAAAAF"]
+
+
+Customer_device 
+
+http://digi.ezycable.com/apps/webservices/update_employee_imei.php?imei=344f23aa9973271b&employee_id=2630&prev_imei=bb2e7f743b2886fc
+http://app.ezycable.com/apps/webservices/update_employee_imei.php?imei=&employee_id=4803&prev_imei=756da83b6d6f33f2
+https://app.ezycable.com/index.php/upgrade/queries
+2Byn;11pfK2187Y
+
+2Byn;11pfK2187Y
+
+Client Name:
+IP:
+CAS:
+Patch:
+Total STB:
+Active STB:
+Issue:
+
+Pending CAF accounts count
+select count(*) from customer where caf_no=' ';
+
+delete from eb_processes where operation_id=0 and start_time between '2019-09-20 00:00:00' and '2023-12-31 23:59:59' and status=1;
+
+Update after 13.6 patch update
+chmod -R 777 /var/www/html/apps/progs/only1pro.pl
+perl -i -pe 'y|\r||d' /var/www/html/apps/progs/only1pro.pl
+
+service nginx restart
+service httpd restart
+service crond restart
+
+service nginx status
+service httpd status
+service crond status
+
+service nginx stop
+service httpd stop
+service crond stop
+
+service nginx start
+service httpd start
+service crond start
+
+
+Querry to run if STB List not generated after Patch Update
+
+alter table eb_stock add column first_activation_date datetime default NULL, ALGORITHM=INPLACE;
+
+alter table eb_stock add column first_activation_date datetime default NULL;
+
+DROP TRIGGER IF EXISTS au_new_stock;
+DELIMITER $$
+
+CREATE TRIGGER au_new_stock
+BEFORE UPDATE
+ON eb_stock FOR EACH ROW
+BEGIN
+IF OLD.is_new=1 and new.is_new=0 and OLD.first_activation_date is null THEN
+SET NEW.first_activation_date=now();
+    END IF;
+END $$  
+
+DELIMITER ;
+
+show create trigger au_new_stock;
+
+Patch 13.7 run these before running patch
+ALTER TABLE acc_payment_details add column parent_payment_id int(11) NOT NULL;
+ALTER TABLE customer add column ekyc_verfied tinyint(1) not null default 0,add column ekyc_address TEXT NOT NULL,modify fathers_name varchar(100);
+alter table eb_auto_expiry_services add column remarks varchar(50) default NULL,add column is_extended_in_cas tinyint(1) default 0;
+alter table eb_stock add column first_activation_date datetime default NULL;
+
+select * from database_changes where patch_version='1.4.13.7' and status=0;
+
+To check Distributor and Sub Distributor Deposits enables or not
+select * from lovtable where setting = 'USE_LCO_DEPOSITS'
+
+To show which queries has been failed during patch update
+select * from database_changes where patch_version='1.4.13.6' and status=0;
+update database_changes set  status=1 where id in () ;
+select * from database_changes order by id desc limit 5
+alter table broadcaster_reports_count add column plugin_id int(11) default 4
+
+
+Querry to run when Rename of groups failed
+UPDATE mysql.user SET drop_priv = 'Y' where user='root' and host='localhost' ;
+FLUSH PRIVILEGES;
+RENAME TABLE groups TO eb_groups;
+UPDATE mysql.user SET drop_priv = 'N' where user='root' and host='localhost' ;
+FLUSH PRIVILEGES;
+
+
+LCO Payable ran or not
+select * from eb_db_log where log_source = 'LCOPayableDailyRollup' and log_date >= date(now());
+
+To know Pending MSO Shares
+select count(distinct cs.customer_id) from eb_customer_extension ce inner join eb_customer_service cs on cs.customer_id=ce.customer_id where ce.mso_share_due>0 and cs.status=1
+
+To remove pairing option in STB for cardless boxes 
+select not_paired_in_cas,is_card_less from eb_stock where serial_number in ();
+update eb_stock set not_paired_in_cas=0,is_card_less=1 where serial_number = '00704397533';
+
+Billing Structure
+select count(*) as advance from customer where bill_type=1;
+select count(*) as postpaid from customer where bill_type=2;
+select count(*) as onetime from eb_products where pricing_structure_type=1;
+select count(*) as recurring from eb_products where pricing_structure_type=2;
+
+Is auto renewals enabled to the client or not
+select * from lovtable where setting='AUTO_EXTENSION_FOR_PREMIUM_CUSTOMERS';
+ select * from lovtable where setting='MANUAL_AUTO_DEACTIVATION';
+ 
+ Auto customer payment: 	
+select * from lovtable where setting like'%CUSTOMER_PAYMENT_AFTER_DEDUCTION%'and dealer_id=1;
+
+select count(*) as acc from acc_payment_details;
+select count(*) as expiry from eb_auto_expiry_services;
+
+For top clients which are having max count for the above two queries below queries should be run before patch udpate after stopping services.
+
+
+ALTER TABLE customer add column ekyc_verfied tinyint(1) not null default 0,add     column ekyc_address TEXT NOT NULL,modify fathers_name varchar(100);
+ALTER TABLE acc_payment_details add column parent_payment_id int(11) NOT NULL;
+alter table audit_logs add column display_name varchar(50) default NULL;
+ALTER TABLE customer_billing_adjustment ADD INDEX fk_billing_id (billing_id);
+ALTER TABLE customer_device ADD (device_id varchar(100) DEFAULT NULL,friendly_name varchar(100) DEFAULT NULL);
+alter table eb_auto_expiry_services add column remarks varchar(50) default NULL;
+
+
+STBs which are activated with duplicate services.
+php /var/www/html/index.php duplicatechannelpackage getDupChannelSTB
+
+Cron to rerun broadcaster schedule report
+21 18 08 07 * php  /var/www/html/index.php report_scheduler  report_scheduler_cron_job 2024-06
+
+Bulk operation status -
+
+Table : eb_process :-
+
+1 -> New
+
+2 - kill
+
+3 --> success
+
+4 - --> Running
+
+
+Static report Status :-
+
+1 --- New
+2 --- downloaded
+3 --- Failed
+4 --- Running
+
+
+Bulk Customer Payment Pending 
+select status, count(*) from eb_processes where operation_id=5 and date(start_time)='2024-01-20' group by status;
+
+select count(1),app_server_id  from eb_processes where operation_id=5 and status=1 group by app_server_id;
+
+select count(*),now() from unpaid_customers_payment where   tries=0 ;
+
+select count(distinct customer_id) from eb_customer_service where reason=4 and service_end_date>'2024-01-20 00:00:00';
+
+select count(distinct customer_id) from eb_customer_service where reason=2 and service_end_date>'2024-01-20 00:00:00';
+ 
+ 
+
+
+Credit:LCO Deposit will increase.
+Debit:LCO Deposit will decrease.
+
+
+DB 16
+CODE 84
+
+Aftab and ISTV DB are migrated in below server please find that server details
+
+local ip: 192.168.1.152
+username: root
+password: vemsoft123
+
+
+public ip: 183.83.216.66
+port: 2828
+username: root
+password: vemsoft123
+
+Amma
+DB public ip: 183.83.216.66
+port : 8885
+user name: root
+Password:vemsoft123
+
+Db password: 
+mysql -u root -pItp\@vem\$0ft123
+
+Code: 192.168.1.143
+Db: 192.168.1.163
+
+Folder name:patch8_CCTEAM
+
+Application IP : http://183.83.216.66:8882/patch8_CCTEAM/
+User name: ACN@ADMIN
+Password: 1234
+
+
+MOD Security On/OFF
+=========================Off======================================
+sed -i 's/SecRuleEngine On/SecRuleEngine Off/' /etc/httpd/conf.d/mod_security.conf
+service httpd restart
+service httpd status
+==============================ON==================================
+sed -i 's/SecRuleEngine Off/SecRuleEngine On/' /etc/httpd/conf.d/mod_security.conf
+service httpd restart
+service httpd status
+
+To delete eb_process record
+delete from eb_processes where  start_time between '2018-01-01 00:00:00' and '2023-12-31 23:59:59' and status=1;
+
+To update bulk operations
+select * from eb_bulk_act_deact_file_content where trans_id='1727271947578'
+update eb_bulk_act_deact_file_content set upload_date=now() where trans_id='1712247165204';
+
+To check CAS Reconciliation status:
+select count(*) as completed from cas_reconciliation_data where is_checked = 1
+select count(*) as remaining from cas_reconciliation_data where is_checked = 0
+
+
+select e.dist_subdist_lcocode,amount from acc_lco_payments alp join employee e on e.employee_id = alp.employee_id where amount < 0 group by alp.employee_id
+
+To find local ips for apps and db
+cat /etc/haproxy/haproxy.cfg | grep web
+cat /etc/haproxy/haproxy.cfg | grep db
+
+
+TO ENABLE REPORTS IN MENU BAR
+INSERT INTO accon_reports (dealer_id,module_id,report_name,function_name,dealer,employee,admin,distributor,subdistributor,reseller,status)
+select d.dealer_id,9,'AGEING_OF_SERVICES','',15,15,15,0,0,0,1 from dealer d
+where not exists (select * from accon_reports where d.dealer_id=dealer_id and 
+report_name='AGEING_OF_SERVICES');
+
+INSERT INTO accon_reports (dealer_id,module_id,report_name,function_name,dealer,employee,admin,distributor,subdistributor,reseller,status)
+select d.dealer_id,9,'STB_TRANSFERS','',15,15,15,0,0,0,1 from dealer d
+where not exists (select * from accon_reports where d.dealer_id=dealer_id and 
+report_name='STB_TRANSFERS');
+
+INSERT INTO accon_reports (dealer_id,module_id,report_name,function_name,dealer,employee,admin,distributor,subdistributor,reseller,status)
+select d.dealer_id,9,'STB_DEFECTIVE_LOGS','',15,15,15,0,0,0,1 from dealer d
+where not exists (select * from accon_reports where d.dealer_id=dealer_id and 
+report_name='STB_DEFECTIVE_LOGS');
+
+INSERT INTO accon_reports (dealer_id,module_id,report_name,function_name,dealer,employee,admin,distributor,subdistributor,reseller,status)
+select d.dealer_id,9,'ONLY_BASE_STB_REPORT','',15,15,15,0,0,0,1 from dealer d
+where not exists (select * from accon_reports where d.dealer_id=dealer_id and 
+report_name='ONLY_BASE_STB_REPORT');
+
+INSERT INTO accon_reports (dealer_id,module_id,report_name,function_name,dealer,employee,admin,distributor,subdistributor,reseller,status)
+select d.dealer_id,9,'BILLEDIT_REPORT','',15,15,15,0,0,0,1 from dealer d
+where not exists (select * from accon_reports where d.dealer_id=dealer_id and 
+report_name='BILLEDIT_REPORT');
+
+update accon_reports set status=1,dealer=15,employee=15,admin=15 where report_name='AGEING_OF_SERVICES';
+update accon_reports set status=1,dealer=15,employee=15,admin=15 where report_name='STB_TRANSFERS';
+update accon_reports set status=1,dealer=15,employee=15,admin=15 where report_name='STB_DEFECTIVE_LOGS';
+update accon_reports set status=1,dealer=15,employee=15,admin=15 where report_name='ONLY_BASE_STB_REPORT';
+update accon_reports set status=1,dealer=15,employee=15,admin=15 where report_name='BILLEDIT_REPORT';
+
+TELNET PORT CHECKING
+bash -c '</dev/tcp/192.168.1.92/2888 && echo PORT OPEN || echo PORT CLOSED' > telnet.txt
+cat telnet.txt
+
+PING CHECKING
+ping -c 5 192.168.1.92 > ping.txt 
+cat ping.txt
+
+To check whether cron ran or not
+tail /var/log/cron | grep "generateStaticReports"
+
+
+To know when the server was shut down and rebooted
+last -x shutdown reboot
+
+
+select count(1) from acc_billing b inner join eb_deducted_deposit_logs l on l.billing_id=b.billing_id where date(b.created_on)<date(l.deducted_on) and b.bill_month='2024-04-01' and b.dealer_id = 1
+
+to find negative balances
+drop temporary table if exists t1;
+create temporary table t1 as select reseller_id, customer_id from customer where reseller_id = 1998;
+create index idx_t1 on t1(customer_id);
+
+select sum(total_amount) from acc_billing ab inner join t1 t on t.customer_id = ab.customer_id;
+select sum(total_amount) from acc_billing_arch ab inner join t1 t on t.customer_id = ab.customer_id;
+select sum(paid_amount) from acc_payment_details pd inner join t1 t on t.customer_id = pd.customer_id;
+
+
+Unpaid Customer Deactivation CRONS for V2
+10 00 * * * php /var/www/html/index.php unpaid_customer_deactivation get_deactivation_of_unpaid_customer >/dev/null 2>&1
+10 01 * * * php /var/www/html/index.php unpaid_customer_deactivation Auto_Deactivation_Unpaid_Customer >/dev/null 2>&1
+
+
+select * from eb_customer_service where customer_service_id=3169720;
+update eb_customer_service set reason=8 where customer_service_id=3169720; 
+
+To enable bulk operations cron process & To allow mulitiple products in bulk operations page.
+
+select * from lovtable where setting in ('ENABLE_BULKOPERAIONS_CRON','ALLOW_MULTIPLE_PRODUCTS_IN_BULKOPERATIONS')
+
+update lovtable set value=1 where setting='ENABLE_BULKOPERAIONS_CRON';
+update lovtable set value=1 where setting='ALLOW_MULTIPLE_PRODUCTS_IN_BULKOPERATIONS';
+*/5 * * * * php /var/www/html/index.php bulkoperation bulkOperationscron >/dev/null 2>&1
+
+select * from eb_reseller_product_mapping where  employee_id = 3 and product_id = 476
+
+
+select * from eb_customer_service where customer_service_id=3169720;
+update eb_customer_service set reason=8 where customer_service_id=3169720;
+
+
+To enable relay server
+
+Insert the below cron (change the cas name, ip and port)
+*/5 * * * * perl /var/www/html/apps/progs/relay-server.pl  --ListenPort=7890 --CasType=ABV --CasIP=192.168.2.100 --CasPort=2202 --CasConnPersist &
+
+Change the relay=0 to relay=1
+update backend_setups set hostname_ip = '192.168.2.100:2202?idb1=16~idb2=13~idb3=1~newpair=1~relay=1~single=1~casver=38~sleepms=500~fpstartdelay=0~fpenddelay=0~blport=80~blpath=-ABVCABLACKLIST~datever=2' where backend_setup_id = 1
+
+To check relay is running or not
+ps aux | grep relay

@@ -1,0 +1,56 @@
+SELECT '2024-08-01' AS date, COUNT( DISTINCT(s.stock_id) ) AS active
+                FROM eb_stock_cas_services sc
+                INNER JOIN eb_products p ON p.product_id=sc.product_id
+                INNER JOIN eb_stock s ON s.stock_id = sc.stock_id -- AND s.is_trash=0 AND s.isSurrended!=1 AND s.defective_stock=0
+                 INNER JOIN eb_stock_items esi ON esi.item_id=s.item_id
+                INNER JOIN  eb_stock_location sl ON sl.reseller_id = sc.reseller_id
+                
+                -- LEFT JOIN  eb_phases ep ON ep.phase_id = sl.phase_id
+                INNER JOIN  backend_setups bs ON bs.backend_setup_id = s.backend_setup_id
+                -- INNER JOIN employee e ON e.employee_id=sc.reseller_id
+                WHERE ( sc.activation_date  <= '2024-08-01 23:59:59' AND ( sc.deactivation_date  > '2024-08-01 23:59:59' OR  sc.deactivation_date IS NULL))  
+                -- AND e.is_reseller=1 AND e.status=1 (moved to condition Satya 04/01/2014)
+                -- AND e.dealer_id=1 (Removed - Satyan - as s.dealer_id is present afterwards)
+                
+                                 
+                AND s.dealer_id =1 AND esi.is_setup_box=1 AND bs.setup_for=5 AND p.plugin_id = 4 
+                group by date;
+
+================== As on Date Deactive Count =============================================
+
+SELECT '2024-08-01' AS date, COUNT( DISTINCT(sc.stock_id) ) AS deactive
+FROM eb_stock_cas_services sc
+INNER JOIN (select max(sc1.cas_service_id) cas_service_id from eb_stock_cas_services sc1 where DATE(sc1.activation_date) <= '2024-08-01' group by sc1.stock_id )y ON y.cas_service_id = sc.cas_service_id
+INNER JOIN eb_stock s ON s.stock_id = sc.stock_id
+INNER JOIN eb_stock_items esi ON esi.item_id=s.item_id
+INNER JOIN  backend_setups bs ON bs.backend_setup_id = s.backend_setup_id
+INNER JOIN employee e ON e.employee_id=sc.reseller_id
+WHERE sc.stock_id NOT IN(
+select distinct(sc.stock_id) FROM  eb_stock_cas_services sc
+INNER JOIN eb_stock s ON s.stock_id = sc.stock_id AND s.dealer_id=1
+INNER JOIN eb_stock_items esi ON esi.item_id=s.item_id
+INNER JOIN employee e ON e.employee_id=sc.reseller_id
+WHERE DATE(sc.activation_date) <= '2024-08-01'  AND esi.is_setup_box=1 AND (DATE(sc.deactivation_date) > '2024-08-01' OR sc.deactivation_date is null)
+ 
+)
+AND DATE(sc.deactivation_date) <= '2024-08-01'
+AND esi.is_setup_box=1
+AND sc.reseller_id>0
+AND s.dealer_id =1
+AND s.status<>3 AND esi.is_setup_box=1 AND bs.setup_for=5;
+====================== As on Date Blacklist Count ========================================================== 	
+
+	SELECT '2024-08-01' AS date, COUNT( DISTINCT(s.stock_id) ) AS blocked
+                FROM eb_stock s
+                INNER JOIN eb_stock_items esi ON esi.item_id=s.item_id
+                INNER JOIN  eb_stock_location sl ON sl.location_id = s.stock_location
+                INNER JOIN  backend_setups bs ON bs.backend_setup_id = s.backend_setup_id 
+                
+                -- LEFT JOIN  eb_phases ep ON ep.phase_id = sl.phase_id
+                LEFT JOIN  eb_stock_cas_services sc ON  sc.stock_id = s.stock_id  
+                           
+                WHERE DATE( s.modified_date ) <= '2024-08-01' AND s.status=3 
+                 
+                
+                AND esi.is_setup_box=1
+                AND s.dealer_id =1 AND esi.is_setup_box=1 AND bs.setup_for=5;

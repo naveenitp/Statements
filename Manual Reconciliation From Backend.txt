@@ -1,0 +1,66 @@
+Check the Data format in the file
+
+It should be box_number,serial_number,cas_product_id
+
+file name format - cas_reconciliation_SumaVision.csv
+
+delete from cas_sms_reconciliation where status = 2
+select * from cas_sms_reconciliation where status = 2
+
+
+check folder "/var/www/html/reconciliation/" exist or not ,
+cd  /var/www/html/reconciliation/
+pwd
+
+if not available then run command
+mkdir /var/www/html/reconciliation
+
+chmod -R 777 /var/www/html/reconciliation
+
+
+ls -l /var/www/html/cas_reconciliation_log.txt
+		
+touch /var/www/html/cas_reconciliation_log.txt
+		
+
+chmod -R 777 /var/www/html/cas_reconciliation_log.txt
+
+
+upload the file into 66 server and run the below cmd in itdesk to download into the required client server.
+cd /var/www/html/reconciliation && wget -O cas_reconciliation_ABV.csv http://183.83.216.66:8184/CR/cas_reconciliation_ABV.csv
+
+ls -larth   /var/www/html/reconciliation/cas_reconciliation_ABV.csv
+
+
+
+tail /var/www/html/cas_reconciliation_log.txt
+tail -100 /var/www/html/cas_reconciliation_log.txt
+tail -50 /var/www/html/debug.txt
+
+To check CAS Reconciliation status:
+select count(*) as completed from cas_reconciliation_data where is_checked = 1;
+select count(*) as remaining from cas_reconciliation_data where is_checked = 0;
+
+
+move file to any one app server in the path - /var/www/html/reconciliation/cas_reconciliation_Gospell.csv
+
+cron set one time :
+
+15 17 14 08 * php /var/www/html/index.php standardsyncCAS execute_manual_reconciliation CONAX cut_off_date
+
+
+
+cd /var/www/html/reconciliation && wget -O cas_reconciliation_CDCAS.csv http://183.83.216.66:8184/CR/cas_reconciliation_CDCAS.csv
+
+
+GOSPELL CAS END DATE NOT UPDATED TO ANY CLIENT SHOULD DO RECONCILIATION WITHOUT START DATE AND END DATE.
+IF TRIMMED VC NUMBER ARE PROVIDED THEN RECONCILIATION SHOULD BE DONE WITH TRIMMED VC NUMBERS
+CDCAS reconciliation of deactive data will be done without start and end date
+
+If cas reconciliation code is present in the client code then we can do cas reconciliation from frontend
+
+
+For Only One Pro CAS Reconciliation we will be doing DEACTIVE-SYNC in CAS Miscellenous Operations for Deactive Services and Bulk Reactivation for Active Services.
+
+
+

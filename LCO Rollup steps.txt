@@ -1,0 +1,75 @@
+1. See if DWJobs folder is created or not 
+ls  
+ 
+2. If not created, create the folder DWJobs
+mkdir /root/DWJobs
+
+cd DWJobs/LCOPayableRollup && ls
+
+ 
+3. After creating the folder run the below query to download the file.
+wget -P /root/DWJobs/ https://lcoledgersummary.s3.ap-south-1.amazonaws.com/LCOPayableDailyRollup_13_6_Deploy.sh
+ 
+4. Execute the script file by replacing the "ezybill_clientname" with the db name.
+sh /root/DWJobs/LCOPayableDailyRollup_13_6_Deploy.sh ezybill_vkdigi &
+
+5. Download the below file by running the below command
+mkdir /root/DWJobs/LCOPayableDailyRollup_13_6/(optional)
+wget -P /root/DWJobs/LCOPayableDailyRollup_13_6/ https://lcoledgersummary.s3.ap-south-1.amazonaws.com/LCOPayableDailyRollupFullRefresh.sh
+
+6. Execute the script file by replacing the "ezybill_clientname" with the db name.
+ yum install dos2unix -y
+dos2unix /root/DWJobs/LCOPayableDailyRollup_13_6/LCOPayableDailyRollupFullRefresh.sh
+
+sh /root/DWJobs/LCOPayableDailyRollup_13_6/LCOPayableDailyRollupFullRefresh.sh ezybill_vkdigi &
+
+7. To check the roll up has been completed or not run the below query in remote management. 
+select * from eb_db_log where log_source = 'LCOPayableDailyRollup' and log_date >= date(now()) order by 1;
+
+8. To check Rollup events enabled or not run the below query.
+show evnets 
+evtProcessLCOPayableDailyRollup Starts column should be scheduled to morning 1:00 AM & DB Status should be ENABLED
+
+select * from eb_dw_jobrun where job_id = 2050 and start_dt_time > '2024-06-01';
+
+select * from eb_db_log where log_source = 'LCOPayableDailyRollup' and log_date >= date(now()) order by 1;
+
+select * from eb_db_log where log_source = 'LCOPayableDailyRollup' and log_date >= '2024-06-01' order by 1;
+
+
+
+drop temporary table if exists t1;
+create temporary table t1 as select reseller_id, customer_id from customer where reseller_id = 1998;
+create index idx_t1 on t1(customer_id);
+
+select sum(total_amount) from acc_billing ab inner join t1 t on t.customer_id = ab.customer_id;
++-------------------+
+| sum(total_amount) |
++-------------------+
+|           1357.92 |
++-------------------+
+1 row in set (0.01 sec)
+
+
+select sum(total_amount) from acc_billing_arch ab inner join t1 t on t.customer_id = ab.customer_id;
++-------------------+
+| sum(total_amount) |
++-------------------+
+|              NULL |
++-------------------+
+1 row in set (0.00 sec)
+
+
+select sum(paid_amount) from acc_payment_details pd inner join t1 t on t.customer_id = pd.customer_id;
++------------------+
+| sum(paid_amount) |
++------------------+
+|          2617.89 |
++------------------+
+
+
+-- CALL spProcessLCOPayableDailyRollup(NULL, '1973-01-01', '2024-12-12'); for all lcos
+-- CALL spProcessLCOPayableDailyRollup(28369, '1973-01-01', DATE_FORMAT(NOW(), '%Y-%m-01')); all data for single LCO
+-- CALL spProcessLCOPayableDailyRollup(191, NULL, NULL); current month 
+
+select employee_id,rollup_month,modified_datetime from lco_payable_rollup order by modified_datetime desc limit 1; select customer_id,modified_datetime from customer_billing_rollup order by modified_datetime desc limit 1;

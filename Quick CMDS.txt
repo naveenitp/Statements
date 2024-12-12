@@ -1,0 +1,189 @@
+
+grep -E 'RC_kzq3ma' /var/www/html/documents/log_files/pglogs.txt
+grep -E '10 Oct 24.*R1mQC7KVXL' /var/www/html/documents/log_files/pglogs.txt
+grep -Em 10 '10 Oct 24.*R1mQC7KVXL' /var/www/html/documents/log_files/pglogs.txt
+grep '23 Oct 24 18.*0xFF' /var/www/html/debug.txt
+
+tail -10 /var/www/html/application/helpers/debug.txt
+grep 'box number' /var/www/html/application/helpers/debug.txt
+
+tail /var/log/httpd/error_log
+tail -100 /var/log/httpd/error_log
+grep -E '10 Apr 21 11.*ABV' /var/www/html/debug.txt
+grep -inR '03 Feb 23.*SDA4C445096101' /var/www/html/debug.txt
+tail -50 /var/www/html/debug.txt | grep CDCAS
+tail -50 /var/www/html/debug.txt
+tail /var/log/cron | grep "checkAllPendingTransactions"
+tail /var/log/cron | grep "paymentgateway"
+last -x shutdown reboot
+curl ifconfig.me
+
+For MySQL Size Checking
+du -sh /var/lib/mysql 
+
+For HTML Size Checking
+du -sh /var/www/html   
+
+To delete locked files 
+ls /var/www/html/documents/lock_bulkoperation.lock
+ls /var/www/html/documents/static_reports.lock
+rm -f /var/www/html/documents/static_reports.lock
+rm -f /var/www/html/documents/lock_bulkoperation.lock
+
+Table : eb_process :-
+
+1 -> New
+
+2 - kill
+
+3 --> success
+
+4 - --> Running
+
+
+Static report Status :-
+
+1 --- New
+2 --- downloaded
+3 --- Failed
+4 --- Running
+
+
+Card to cardless
+
+select not_paired_in_cas, is_card_less from eb_stock where serial_number IN ('')
+
+update eb_stock set not_paired_in_cas=0,is_card_less=1 where serial_number IN ('')
+
+
+select request_url,merchant_id,access_code,return_url,cancel_url,pending_trans_url from backend_setups
+select cas_server_type, display_name from backend_setups
+
+select @rownum := @rownum + 1 AS S_No, cas_server_type, display_name from backend_setups, (SELECT @rownum := 0) r WHERE cas_server_type IS NOT NULL;
+
+
+select stock_id, serial_number, vc_number, is_trash, trashed_date from eb_stock where serial_number in ('6030637009158205');
+select stock_id from eb_stock where serial_number in ();
+update eb_stock set is_trash = 0 where stock_id in ();
+update eb_stock set is_trash = 0 where serial_number in ('21018050079604');
+update eb_stock set is_trash = 0, trashed_date = '2023-07-05' where stock_id in ();
+update eb_stock set is_trash = 0, trashed_date = CURRENT_TIMESTAMP where stock_id in ();
+select users_type,employee_id, dist_subdist_lcocode, parent_id from employee where employee_id in (5097,2723);
+
+
+select business_name, employee_id, parent_id, dist_subdist_lcocode,users_type from employee where employee_id in ();
+select employee_id, parent_id, dist_subdist_lcocode,users_type from employee where dist_subdist_lcocode in ();
+update employee set parent_id='' where employee_id in ();
+update employee set users_type = 'SUBDISTRIBUTOR', last_updated_date = CURRENT_TIMESTAMP where employee_id in (12951) ;
+
+select * from employee where username = 'Rokon1057';
+update employee set use_android = 1 where employee_id = 68;
+
+Customer_device 
+
+http://digi.ezycable.com/apps/webservices/update_employee_imei.php?imei=344f23aa9973271b&employee_id=2630&prev_imei=bb2e7f743b2886fc
+http://app.ezycable.com/apps/webservices/update_employee_imei.php?imei=&employee_id=2305&prev_imei=f264e5738d851159
+https://app.ezycable.com/index.php/upgrade/queries
+
+
+
+
+select count(*) from eb_customer_service where last_invoice_date = '2023-06-01' and service_end_date between '2019-12-31' and '2023-05-31'
+https://sms.bcndigitaltv.com/index.php/payments/makePayment/230191
+
+1000100067375710
+
+adminidukki
+
+865236049635190
+Justin@Idukki@1
+4600442A
+
+1000100067375710
+
+
+select count(distinct s.stock_id ) total
+FROM  eb_stock s 
+INNER JOIN eb_stb_types est ON s.stb_type_id = est.stb_type_id
+
+INNER JOIN backend_setups bs ON s.backend_setup_id=bs.backend_setup_id 
+INNER JOIN eb_stock_location sl ON sl.location_id=s.stock_location 
+LEFT JOIN employee e ON e.employee_id = sl.reseller_id
+-- LEFT JOIN eb_cas_inventory_logs cil ON cil.stock_id=s.stock_id AND cil.cas_inv_log_id=(select max(cas_inv_log_id) from eb_cas_inventory_logs where stock_id=s.stock_id  AND s.status=1) 
+LEFT JOIN customer_device cd FORCE INDEX (customer_device_bn_dco) ON cd.box_number=s.serial_number AND cd.device_closed_on IS NULL         
+LEFT JOIN customer c ON cd.customer_id = c.customer_id 
+
+INNER JOIN eb_models em ON s.model_number = em.model_id
+WHERE (s.status IN (1,2))    AND s.is_trash=0     AND  s.dealer_id=1;
+
+
+select count(distinct s.stock_id ) active
+FROM  eb_stock s 
+INNER JOIN eb_stb_types est ON s.stb_type_id = est.stb_type_id
+
+INNER JOIN backend_setups bs ON s.backend_setup_id=bs.backend_setup_id 
+INNER JOIN eb_stock_location sl ON sl.location_id=s.stock_location 
+LEFT JOIN employee e ON e.employee_id = sl.reseller_id
+-- LEFT JOIN eb_cas_inventory_logs cil ON cil.stock_id=s.stock_id AND cil.cas_inv_log_id=(select max(cas_inv_log_id) from eb_cas_inventory_logs where stock_id=s.stock_id  AND s.status=1) 
+INNER JOIN customer_device cd ON cd.box_number=s.serial_number AND cd.device_closed_on IS NULL         
+INNER JOIN customer c ON cd.customer_id = c.customer_id 
+
+INNER JOIN eb_models em ON s.model_number = em.model_id
+WHERE s.status=1     AND s.is_trash=0  AND s.defective_stock=0  AND s.isSurrended!=1 AND  s.dealer_id=1;
+
+
+SELECT count(*) RESELLER FROM employee where users_type = 'RESELLER' and status=1;
+
+update lovtable set value = 1 where lovid = 388
+192.168.10.105:2888 GOSPEELL CAS INTRA WORLD
+
+
+SELECT COUNT(*) as total_count
+FROM (
+    SELECT COUNT(scs.customer_service_id) total, 
+           COUNT(IF(p.is_base_package=1, 1, NULL)) AS base_count, 
+           CONCAT("'", s.serial_number), 
+           CONCAT("'", s.vc_number), 
+           scs.stock_id
+    FROM eb_stock_cas_services scs
+    INNER JOIN eb_products p ON p.product_id = scs.product_id
+    INNER JOIN eb_stock s ON s.stock_id = scs.stock_id
+    WHERE scs.deactivation_date IS NULL 
+    AND s.status = 1 
+    GROUP BY scs.stock_id
+    HAVING base_count = 0
+) as subquery;
+
+
+Duplicate Services
+select count(*) cnt,max(customer_service_id) as customer_service_id, stock_id,reseller_id, product_id,activation_date from eb_stock_cas_services where deactivation_date IS NULL and customer_service_id>0 group by stock_id, product_id having cnt>1;
+
+Missing Services
+select count(*) from eb_customer_service cs left join eb_stock_cas_services scs on cs.customer_service_id=scs.customer_service_id where scs.customer_service_id is null;
+
+Missing Customers
+Select cd.box_number,cd.customer_id,cd.created_on,device_closed_on from customer_device cd left join customer c on cd.customer_id=c.customer_id where c.customer_id is null;
+
+Single box, Multiple Customers
+select count(box_number) cnt,box_number,created_on,created_by,remarks  from customer_device  where  device_closed_on is NULL group by box_number having cnt>1;
+
+Same box, Same Customer Multiple Records
+select count(box_number) cnt,box_number,created_on,created_by,remarks  from customer_device  where  device_closed_on is NULL group by box_number ,customer_id having cnt>1;
+
+Box deactive with Service active
+create temporary table deactive_boxes select s.serial_number,s.stock_id, scs.customer_service_id ,scs.activation_date,scs.deactivation_date from eb_stock s inner join eb_stock_cas_services scs on s.stock_id=scs.stock_id where s.status=2 and scs.deactivation_date is  NULL and customer_service_id>0; select * from deactive_boxes;
+
+Box Active with service De-active
+select s.serial_number, s.vc_number, s.stock_id, count(scs.customer_service_id) total, SUM(CASE WHEN scs.deactivation_date is not null THEN 1 ELSE 0 END) AS deactive from eb_stock s inner join eb_stock_cas_services scs on scs.stock_id = s.stock_id where s.status=1  group by scs.stock_id having total = deactive;
+
+Service still active on replace boxes
+select count(*) from eb_stock_cas_services ecs INNER JOIN eb_customer_service_box_details ecbs ON ecs.customer_service_id = ecbs.customer_service_id INNER JOIN customer_device cd ON cd.customer_device_id = ecbs.box_number where cd.device_closed_on IS NOT NULL and ecs.deactivation_date IS NULL;
+
+
+soham URL: http://192.168.1.145/patch10_soham/
+
+Logins: sohamadmin     1234
+
+app server: 192.168.1.145
+
+DB server 192.168.1.17

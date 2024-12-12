@@ -1,0 +1,65 @@
+Duplicate Service	
+select count(*) cnt,max(customer_service_id) as customer_service_id, stock_id,reseller_id, product_id,activation_date from eb_stock_cas_services where deactivation_date IS NULL and customer_service_id>0 group by stock_id, product_id having cnt>1;
+
+Missing Services	
+select count(*) from eb_customer_service cs left join eb_stock_cas_services scs on cs.customer_service_id=scs.customer_service_id where scs.customer_service_id is null;
+
+Missing Customers	
+Select cd.box_number,cd.customer_id,cd.created_on,device_closed_on from customer_device cd left join customer c on cd.customer_id=c.customer_id where c.customer_id is null;
+
+Duplicate Payments	
+select count(*) as cnt ,payment_id,customer_id,paid_on,paid_amount,adjustment_flag,remarks  
+from acc_payment_details
+where date(paid_on)>'2022-10-31'  
+and remarks<>'Auto Customer Payment'
+group by customer_id,paid_amount,paid_on  
+having cnt >1;
+
+Single box, Multiple Customers	
+select count(box_number) cnt,box_number,created_on,created_by,remarks  from customer_device  where  device_closed_on is NULL group by box_number having cnt>1;
+
+Same box, Same Customer Multiple Records	
+select count(box_number) cnt,box_number,created_on,created_by,remarks  from customer_device  where  device_closed_on is NULL group by box_number ,customer_id having cnt>1;
+
+Box deactive with Service active	
+create temporary table deactive_boxes select s.serial_number,s.stock_id,
+scs.customer_service_id ,scs.activation_date,scs.deactivation_date from eb_stock s inner join eb_stock_cas_services scs on s.stock_id=scs.stock_id where s.status=2 and scs.deactivation_date is  NULL and customer_service_id>0;
+select * from deactive_boxes;
+
+Box Active with service De-active	
+select s.serial_number, s.vc_number, s.stock_id, count(scs.customer_service_id) total,
+SUM(CASE WHEN scs.deactivation_date is not null THEN 1 ELSE 0 END) AS deactive
+from eb_stock s
+inner join eb_stock_cas_services scs on scs.stock_id = s.stock_id
+where s.status=1  group by scs.stock_id
+having total = deactive
+INTO OUTFILE '/tmp/29112024_file.csv' FIELDS TERMINATED BY ',' ENCLOSED BY '' LINES TERMINATED BY '';
+
+Only Bundle is active with no child inserted	
+select count(*) from eb_customer_service cs left join eb_customer_service cs1  on cs.customer_service_id = cs1.parent_service_id
+inner join eb_customer_products cp on cp.customer_service_id=cs.customer_service_id inner join  eb_products p on p.product_id=cp.product_id
+where cs.status=1  and cs1.parent_service_id is null and p.is_master=1;
+
+Bundle deactive child active	
+select count(*) as cnt from eb_customer_service cs
+inner join eb_stock_cas_services scs on scs.customer_service_id = cs.customer_service_id
+inner join eb_products ep on ep.product_id = scs.product_id
+inner join eb_customer_service cs1 on cs.customer_service_id = cs1.parent_service_id and cs1.status = 1
+where cs.status=0;
+
+STB active without Base Package	
+select count(customer_service_id) total, COUNT(if(p.is_base_package=1,1,NULL)) as base_count,CONCAT(',s.serial_number),CONCAT(',s.vc_number) ,scs.stock_id from eb_stock_cas_services scs
+inner join eb_products p on p.product_id = scs.product_id
+inner join eb_stock s on s.stock_id = scs.stock_id
+where scs.deactivation_date is null and s.status=1 group by scs.stock_id having base_count=0
+INTO OUTFILE '/tmp/without_basepackage_29112024.csv' FIELDS TERMINATED BY ',' ENCLOSED BY '' LINES TERMINATED BY '\r\n';
+
+Service still active on replace boxes	
+select count(*)
+from eb_stock_cas_services ecs
+INNER JOIN eb_customer_service_box_details ecbs ON ecs.customer_service_id = ecbs.customer_service_id
+INNER JOIN customer_device cd ON cd.customer_device_id = ecbs.box_number
+where cd.device_closed_on IS NOT NULL and ecs.deactivation_date IS NULL;
+
+City missing	
+select count(1) from customer where city=0 and stb_count > 0;

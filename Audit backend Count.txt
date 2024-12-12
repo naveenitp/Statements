@@ -1,0 +1,215 @@
+================As on Date Active Count=================
+
+
+
+select date,sum(active) as active from(
+select *,0 as active from 
+            (select adddate('1970-01-01',t4.i*10000 + t3.i*1000 + t2.i*100 + t1.i*10 + t0.i) date from
+             (select 0 i union select 1 union select 2 union select 3 union select 4 union select 5 union select 6 union select 7 union select 8 union select 9) t0,
+             (select 0 i union select 1 union select 2 union select 3 union select 4 union select 5 union select 6 union select 7 union select 8 union select 9) t1,
+             (select 0 i union select 1 union select 2 union select 3 union select 4 union select 5 union select 6 union select 7 union select 8 union select 9) t2,
+             (select 0 i union select 1 union select 2 union select 3 union select 4 union select 5 union select 6 union select 7 union select 8 union select 9) t3,
+             (select 0 i union select 1 union select 2 union select 3 union select 4 union select 5 union select 6 union select 7 union select 8 union select 9) t4) v
+            where date between '2021-01-31' and '2021-01-31'
+            UNION   
+SELECT '2021-01-31' AS date, COUNT( DISTINCT(s.stock_id) ) AS active
+                FROM eb_stock_cas_services sc
+                INNER JOIN eb_products p ON p.product_id=sc.product_id
+                INNER JOIN eb_stock s ON s.stock_id = sc.stock_id -- AND s.is_trash=0 AND s.isSurrended!=1 AND s.defective_stock=0
+                 INNER JOIN eb_stock_items esi ON esi.item_id=s.item_id
+                INNER JOIN  eb_stock_location sl ON sl.reseller_id = sc.reseller_id
+                
+                -- LEFT JOIN  eb_phases ep ON ep.phase_id = sl.phase_id
+                INNER JOIN  backend_setups bs ON bs.backend_setup_id = s.backend_setup_id
+                -- INNER JOIN employee e ON e.employee_id=sc.reseller_id
+                WHERE ( sc.activation_date  <= '2021-01-31 23:59:59' AND ( sc.deactivation_date  > '2021-01-31 23:59:59' OR  sc.deactivation_date IS NULL))  
+                -- AND e.is_reseller=1 AND e.status=1 (moved to condition Satya 04/01/2014)
+                -- AND e.dealer_id=1 (Removed - Satyan - as s.dealer_id is present afterwards)
+                
+                                 
+                AND s.dealer_id =1 AND esi.is_setup_box=1 AND bs.setup_for=5 AND p.plugin_id = 4 
+                group by date;
+
+================== As on Date Deactive Count =============================================
+
+SELECT '2021-01-31' AS date, COUNT( DISTINCT(sc.stock_id) ) AS deactive
+FROM eb_stock_cas_services sc
+INNER JOIN (select max(sc1.cas_service_id) cas_service_id from eb_stock_cas_services sc1 where DATE(sc1.activation_date) <= '2021-01-31' group by sc1.stock_id )y ON y.cas_service_id = sc.cas_service_id
+INNER JOIN eb_stock s ON s.stock_id = sc.stock_id
+INNER JOIN eb_stock_items esi ON esi.item_id=s.item_id
+INNER JOIN  backend_setups bs ON bs.backend_setup_id = s.backend_setup_id
+INNER JOIN employee e ON e.employee_id=sc.reseller_id
+WHERE sc.stock_id NOT IN(
+select distinct(sc.stock_id) FROM  eb_stock_cas_services sc
+INNER JOIN eb_stock s ON s.stock_id = sc.stock_id AND s.dealer_id=1
+INNER JOIN eb_stock_items esi ON esi.item_id=s.item_id
+INNER JOIN employee e ON e.employee_id=sc.reseller_id
+WHERE DATE(sc.activation_date) <= '2021-01-31'  AND esi.is_setup_box=1 AND (DATE(sc.deactivation_date) > '2021-01-31' OR sc.deactivation_date is null)
+ 
+)
+AND DATE(sc.deactivation_date) <= '2021-01-31'
+AND esi.is_setup_box=1
+AND sc.reseller_id>0
+AND s.dealer_id =1
+AND s.status<>3 AND esi.is_setup_box=1 AND bs.setup_for=5;
+====================== As on Date Blacklist Count ========================================================== 	
+
+	SELECT '2021-01-31' AS date, COUNT( DISTINCT(s.stock_id) ) AS blocked
+                FROM eb_stock s
+                INNER JOIN eb_stock_items esi ON esi.item_id=s.item_id
+                INNER JOIN  eb_stock_location sl ON sl.location_id = s.stock_location
+                INNER JOIN  backend_setups bs ON bs.backend_setup_id = s.backend_setup_id 
+                
+                -- LEFT JOIN  eb_phases ep ON ep.phase_id = sl.phase_id
+                LEFT JOIN  eb_stock_cas_services sc ON  sc.stock_id = s.stock_id  
+                           
+                WHERE DATE( s.modified_date ) <= '2021-01-31' AND s.status=3 
+                 
+                
+                AND esi.is_setup_box=1
+                AND s.dealer_id =1 AND esi.is_setup_box=1 AND bs.setup_for=5;		
+================================================================================================================================
+Customer Count:
+
+SELECT    count(distinct c.customer_id) cnt                
+                        FROM customer c
+                        INNER JOIN customer_group cg  ON cg.customer_id=c.customer_id 
+                        INNER JOIN groups g ON g.group_id=cg.group_id 
+                        INNER JOIN eb_location_locations ebc ON ebc.location_id=c.city 
+                                                
+                        INNER JOIN employee e ON c.reseller_id = e.employee_id
+                        INNER JOIN employee a ON c.reseller_id = a.employee_id 
+                        LEFT JOIN eb_customer_types ct ON ct.customer_type_id=c.customer_type_id
+                                            INNER JOIN customer_device cd ON cd.customer_id = c.customer_id AND cd.device_closed_on IS NULL 
+                                            
+                        WHERE c.dealer_id=1   AND  c.stb_count > 0 			
+
+
+As on date Deactive 
+======================
+SELECT CONCAT( '\'',s.serial_number) as serial_number,
+CONCAT('\'',CASE bs.use_mac WHEN '1' THEN s.mac_address ELSE s.vc_number END) AS mac_vc_number,
+COALESCE(REPLACE(c.customer_account_id, '-', ''),'NA')crf_number,
+COALESCE( CONCAT( c.first_name, ' ', c.last_name ) , 'NA' ) customer_name,sl.location_name,
+bs.cas_server_type as cas,COALESCE(ll.location_name,'NA') lco_location,e.dist_subdist_lcocode as lcocode,e.business_name,st.display_name as stb_type,bs.display_name as cas
+FROM eb_stock_cas_services sc
+INNER JOIN (select max(sc1.cas_service_id) cas_service_id, max(sc1.deactivation_date) deactivation_date from eb_stock_cas_services sc1 where DATE(sc1.deactivation_date) <= '2021-01-31' group by sc1.stock_id )y
+ON y.cas_service_id = sc.cas_service_id
+INNER JOIN eb_stock_cas_services sc1 ON sc1.cas_service_id = (SELECT MAX(cas_service_id) FROM eb_stock_cas_services WHERE sc.stock_id = stock_id)
+INNER JOIN eb_stock s ON s.stock_id = sc.stock_id
+LEFT JOIN customer_device cd ON cd.box_number=s.serial_number AND cd.device_closed_on IS NULL
+INNER JOIN eb_stock_location sl ON sl.reseller_id = sc.reseller_id
+INNER JOIN backend_setups bs ON bs.backend_setup_id = s.backend_setup_id
+INNER JOIN employee e ON e.employee_id=sc.reseller_id
+LEFT JOIN customer c ON c.customer_id=cd.customer_id
+INNER JOIN eb_stb_types st ON st.stb_type_id = s.stb_type_id
+LEFT JOIN eb_location_locations ll ON ll.location_id = e.city
+WHERE sc.stock_id NOT IN(
+select distinct(scs.stock_id) FROM eb_stock_cas_services scs
+INNER JOIN eb_stock s ON s.stock_id = scs.stock_id AND s.dealer_id=1
+INNER JOIN eb_stock_location sl ON sl.reseller_id = scs.reseller_id
+INNER JOIN employee e ON e.employee_id=scs.reseller_id
+WHERE DATE(scs.activation_date) <= '2021-01-31' AND (DATE(scs.deactivation_date) > '2021-01-31' OR COALESCE(DATE(scs.deactivation_date),'3000-12-31')>'2021-01-31')
+)
+AND (DATE(sc.deactivation_date) <= '2021-01-31' )
+AND s.status<>3
+AND sc.reseller_id>0
+AND s.dealer_id =1
+AND sl.dealer_id =1
+Group by s.stock_id
+ORDER BY sc.deactivation_date 
+INTO OUTFILE '/tmp/deactive_27June2024.csv'  FIELDS TERMINATED BY ',' ENCLOSED BY '' LINES TERMINATED BY '\r\n';
+
+
+
+============================================As on date Active=============================================================================
+select CONCAT( '\'',s.serial_number) as serial_number,CONCAT('\'',CASE bs.use_mac WHEN '1' THEN s.mac_address ELSE s.vc_number END) AS mac_vc_number,group_concat(CASE p.alacarte WHEN 1 THEN CONCAT(p.pname,'( Alacarte )') ELSE p.pname END SEPARATOR ', ') as package_names,scs.activation_date as activation_time, CONCAT(c.first_name,' ',coalesce(c.last_name,'')) as customer_name,COALESCE(concat(c.address1,'',c.address2,'',c.address3),'NA') as Address
+FROM eb_stock_cas_services scs
+INNER JOIN eb_products p ON p.product_id=scs.product_id
+INNER JOIN eb_stock s ON s.stock_id = scs.stock_id -- AND s.is_trash=0 AND s.isSurrended!=1 AND s.defective_stock=0
+INNER JOIN backend_setups bs ON bs.backend_setup_id = s.backend_setup_id
+LEFT JOIN customer_device cd ON cd.box_number = s.serial_number
+AND DATE( cd.created_on ) <= '2021-01-31'
+AND (DATE(cd.device_closed_on) > '2021-01-31' OR cd.device_closed_on IS NULL)
+LEFT JOIN customer c ON c.customer_id=cd.customer_id
+WHERE DATE(scs.activation_date) <= '2021-01-31' AND (DATE(scs.deactivation_date) > '2021-01-31' OR COALESCE(DATE(scs.deactivation_date),'3000-12-31')>'2021-01-31')
+AND s.dealer_id=1
+GROUP BY s.stock_id
+ORDER BY scs.activation_date 
+INTO OUTFILE '/tmp/active_27June2024.csv'  FIELDS TERMINATED BY ',' ENCLOSED BY '' LINES TERMINATED BY '\r\n';
+
+
+
+
+
+================================================= Package Edit logs========================================
+SELECT pcs.channel_status_id,pcs.product_id,pcs.channel_id,pcs.status,pcs.changed_datetime AS date_and_time, ep.pname AS package,ep.backend_setup_id,bs.display_name AS cas,ec.channel_name AS channels,
+CASE pcs.status WHEN 1 THEN 'ADDED' ELSE 'REMOVED' END AS status
+FROM eb_product_channels_statuses pcs
+INNER JOIN eb_products ep ON ep.product_id=pcs.product_id
+INNER JOIN eb_channels ec ON ec.channel_id=pcs.channel_id
+INNER JOIN backend_setups bs ON ep.backend_setup_id=bs.backend_setup_id
+WHERE  pcs.dealer_id=1 ORDER BY pcs.changed_datetime 
+INTO OUTFILE '/tmp/product_editlogs_27June2024.csv'  FIELDS TERMINATED BY ',' ENCLOSED BY '' LINES TERMINATED BY '\r\n';
+
+
+Blacklisted :
+==================
+select concat("'",serial_number),concat("'",vc_number),b.display_name,is_trash from eb_stock s inner join backend_setups b on b.backend_setup_id=s.backend_setup_id  where s.status=3 order by b.display_name
+INTO OUTFILE '/tmp/blacklist_27June2024_2.csv'  FIELDS TERMINATED BY ',' ENCLOSED BY '' LINES TERMINATED BY '\r\n';					
+
+
+
+
+DEACTIVE 
+
+SET @date = '2021-01-31';
+
+SELECT @date AS date, COUNT(DISTINCT(sc.stock_id)) AS deactive
+FROM eb_stock_cas_services sc
+INNER JOIN (
+    SELECT MAX(sc1.cas_service_id) AS cas_service_id 
+    FROM eb_stock_cas_services sc1 
+    WHERE DATE(sc1.activation_date) <= @date 
+    GROUP BY sc1.stock_id
+) y ON y.cas_service_id = sc.cas_service_id
+INNER JOIN eb_stock s ON s.stock_id = sc.stock_id
+INNER JOIN eb_stock_items esi ON esi.item_id = s.item_id
+INNER JOIN backend_setups bs ON bs.backend_setup_id = s.backend_setup_id
+INNER JOIN employee e ON e.employee_id = sc.reseller_id
+WHERE sc.stock_id NOT IN (
+    SELECT DISTINCT(sc2.stock_id) 
+    FROM eb_stock_cas_services sc2
+    INNER JOIN eb_stock s2 ON s2.stock_id = sc2.stock_id AND s2.dealer_id = 1
+    INNER JOIN eb_stock_items esi2 ON esi2.item_id = s2.item_id
+    INNER JOIN employee e2 ON e2.employee_id = sc2.reseller_id
+    WHERE DATE(sc2.activation_date) <= @date  
+      AND esi2.is_setup_box = 1 
+      AND (DATE(sc2.deactivation_date) > @date OR sc2.deactivation_date IS NULL)
+)
+AND DATE(sc.deactivation_date) <= @date
+AND esi.is_setup_box = 1
+AND sc.reseller_id > 0
+AND s.dealer_id = 1
+AND s.status <> 3 
+AND bs.setup_for = 5;
+
+
+Active
+
+SET @date = '2021-01-31';
+
+SELECT @date AS date, COUNT(DISTINCT(s.stock_id)) AS active
+FROM eb_stock_cas_services sc
+INNER JOIN eb_products p ON p.product_id = sc.product_id
+INNER JOIN eb_stock s ON s.stock_id = sc.stock_id
+INNER JOIN eb_stock_items esi ON esi.item_id = s.item_id
+INNER JOIN eb_stock_location sl ON sl.reseller_id = sc.reseller_id
+INNER JOIN backend_setups bs ON bs.backend_setup_id = s.backend_setup_id
+WHERE sc.activation_date <= CONCAT(@date, ' 23:59:59')
+  AND (sc.deactivation_date > CONCAT(@date, ' 23:59:59') OR sc.deactivation_date IS NULL)
+  AND s.dealer_id = 1
+  AND esi.is_setup_box = 1
+  AND bs.setup_for = 5
+  AND p.plugin_id = 4
+GROUP BY date;

@@ -1,0 +1,150 @@
+ip : sms.sscbpl.com     
+
+
+history | grep ssh
+Open Putty login with host : sms.sscbpl.com
+then connect
+
+
+then login with username : root
+password : dRiw2&OTROrurubUSi
+
+connect to the database by ip ssh 192.168.2.21
+
+go to mysql
+show databases;
+use ezybill_saicom;
+
+
+Create temporary table lcos
+select employee_id,deposit_amount,dist_subdist_lcocode
+from employee
+where users_type='reseller'; 
+
+select sum(deducted_deposit_amount) as amt,d.reseller_id
+from eb_deducted_deposit_logs d
+inner join lcos l on l.employee_id = d.reseller_id
+group by d.reseller_id
+INTO OUTFILE '/tmp/deduction_records_04112024.csv' FIELDS TERMINATED BY ',' ENCLOSED BY '"' LINES TERMINATED BY '\r\n';
+
+create temporary table deduction_records (amt decimal(13,2), reseller_id int(11));
+
+LOAD DATA INFILE '/tmp/deduction_records_04112024.csv'
+INTO TABLE deduction_records FIELDS TERMINATED BY ',' ENCLOSED BY '"' LINES TERMINATED BY '\r\n';
+
+
+select sum(amount) as amt,l.employee_id
+from acc_lco_payments p
+inner join lcos l on l.employee_id = p.employee_id
+group by p.employee_id
+INTO OUTFILE '/tmp/payment_records04112024.csv' FIELDS TERMINATED BY ',' ENCLOSED BY '"' LINES TERMINATED BY '\r\n';
+
+create temporary table payment_records (amt decimal(13,2), employee_id int(11));
+
+LOAD DATA INFILE '/tmp/payment_records04112024.csv'
+INTO TABLE payment_records FIELDS TERMINATED BY ',' ENCLOSED BY '"' LINES TERMINATED BY '\r\n';
+
+select 'EMPLOYEE ID','LCOCODE', 'LATEST DEPOSIT', 'CURRENT DEPOSIT', 'TOTAL PAID', 'TOTAL DEDUCTIONS', 'ACTUAL DEPOSIT'
+UNION ALL
+select pr.employee_id as id, e.dist_subdist_lcocode as lcocode,e.deposit_amount as latest_deposit, l.deposit_amount as current_deposit,sum(pr.amt) as total_paid,sum(dr.amt) as total_deductions,(coalesce(sum(pr.amt),0) - coalesce(sum(dr.amt),0)) as actual_deposit from payment_records pr
+inner join lcos l on l.employee_id = pr.employee_id
+inner join employee e on e.employee_id = l.employee_id
+left join deduction_records dr on dr.reseller_id = pr.employee_id
+group by pr.employee_id
+having current_deposit != actual_deposit
+INTO OUTFILE '/tmp/deposit_balance04112024.csv' FIELDS TERMINATED BY ',' ENCLOSED BY '"' LINES TERMINATED BY '\r\n';
+
+===============================================================================================================================================================
+
+select pr.employee_id, e.dist_subdist_lcocode lcocode,e.deposit_amount latest_deposit, l.deposit_amount as current_deposit,sum(pr.amt) total_paid,sum(dr.amt) total_deductions,(coalesce(sum(pr.amt),0) - coalesce(sum(dr.amt),0)) as actual_deposit from payment_records pr
+inner join lcos l on l.employee_id = pr.employee_id
+inner join employee e on e.employee_id = l.employee_id
+left join deduction_records dr on dr.reseller_id = pr.employee_id
+group by pr.employee_id
+INTO OUTFILE '/tmp/deposit_balance991_4.csv' FIELDS TERMINATED BY ',' ENCLOSED BY '"' LINES TERMINATED BY '\r\n';
+
+select count(1) from eb_deducted_deposit_logs where deducted_on > '2023-03-02 12:04:00' and '2023-03-02 12:06:00';
+select sum(deducted_deposit_amount) deduction,reseller_id from eb_deducted_deposit_logs where deducted_on >'2023-03-02 12:04:00' and '2023-03-02 12:06:00' group by reseller_id;
+select sum(amount) payment,employee_id from acc_lco_payments where paid_on >'2023-03-02 12:04:00' and '2023-03-02 12:06:00' group by employee_id;
+
+
+
+=================================================================================================================================================================
+
+-- Create temporary table lcos
+CREATE TEMPORARY TABLE lcos AS
+SELECT employee_id, deposit_amount, dist_subdist_lcocode
+FROM employee
+WHERE users_type = 'reseller';
+
+-- Generate deduction records
+SELECT SUM(deducted_deposit_amount) AS amt, d.reseller_id
+FROM eb_deducted_deposit_logs d
+INNER JOIN lcos l ON l.employee_id = d.reseller_id
+GROUP BY d.reseller_id
+INTO OUTFILE '/tmp/deduction_records_04112024.csv'
+FIELDS TERMINATED BY ',' ENCLOSED BY '"'
+LINES TERMINATED BY '\r\n';
+
+CREATE TEMPORARY TABLE deduction_records (
+    amt DECIMAL(13,2),
+    reseller_id INT(11)
+);
+
+LOAD DATA INFILE '/tmp/deduction_records_04112024.csv'
+INTO TABLE deduction_records
+FIELDS TERMINATED BY ','
+ENCLOSED BY '"'
+LINES TERMINATED BY '\r\n';
+
+-- Generate payment records
+SELECT SUM(amount) AS amt, l.employee_id
+FROM acc_lco_payments p
+INNER JOIN lcos l ON l.employee_id = p.employee_id
+GROUP BY p.employee_id
+INTO OUTFILE '/tmp/payment_records_04112024.csv'
+FIELDS TERMINATED BY ','
+ENCLOSED BY '"'
+LINES TERMINATED BY '\r\n';
+
+CREATE TEMPORARY TABLE payment_records (
+    amt DECIMAL(13,2),
+    employee_id INT(11)
+);
+
+LOAD DATA INFILE '/tmp/payment_records_04112024.csv'
+INTO TABLE payment_records
+FIELDS TERMINATED BY ','
+ENCLOSED BY '"'
+LINES TERMINATED BY '\r\n';
+
+-- Generate the final report with headers
+SELECT 'EMPLOYEE ID', 'LCOCODE', 'LATEST DEPOSIT', 'CURRENT DEPOSIT', 'TOTAL PAID', 'TOTAL DEDUCTIONS', 'ACTUAL DEPOSIT'
+UNION ALL
+SELECT pr.employee_id AS id,
+       e.dist_subdist_lcocode AS lcocode,
+       e.deposit_amount AS latest_deposit,
+       l.deposit_amount AS current_deposit,
+       COALESCE(SUM(pr.amt), 0) AS total_paid,
+       COALESCE(SUM(dr.amt), 0) AS total_deductions,
+       (COALESCE(SUM(pr.amt), 0) - COALESCE(SUM(dr.amt), 0)) AS actual_deposit
+FROM payment_records pr
+INNER JOIN lcos l ON l.employee_id = pr.employee_id
+INNER JOIN employee e ON e.employee_id = l.employee_id
+LEFT JOIN deduction_records dr ON dr.reseller_id = pr.employee_id
+GROUP BY pr.employee_id
+HAVING current_deposit != actual_deposit
+INTO OUTFILE '/tmp/deposit_balance_04112024.csv'
+FIELDS TERMINATED BY ','
+ENCLOSED BY '"'
+LINES TERMINATED BY '\r\n';
+
+
+
+
+
+
+
+
+
+

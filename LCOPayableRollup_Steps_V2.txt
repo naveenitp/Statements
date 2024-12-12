@@ -1,0 +1,59 @@
+1. Login to database server
+
+2. Ensure you are in root folder
+cd DWJobs/LCOPayableRollup && ls
+
+3. Check if the folder DWJobs exists. If not create (mkdir DWJobs).
+
+4. Move to DWJobs folder (cd DWJobs)
+
+5. Check if the folder LCOPayableRollup exists. If not create (mkdir LCOPayableRollup)
+
+6. Move to LCOPayableRollup folder (cd LCOPayableRollup)
+
+7. Copy the LCOPayableRollupDeploy_V5.zip file to this location using the following command.
+
+wget -P /root/DWJobs/LCOPayableRollup https://lcoledgersummary.s3.ap-south-1.amazonaws.com/DWJobs/LCOPayableRollup_V5.zip
+
+8. Unzip LCOPayableRollupDeploy_V5.zip
+yum install unzip -y (unzip pack if not installed)
+
+ls -larth  /root/DWJobs/LCOPayableRollup/LCOPayableRollup_V5.zip
+cd /root/DWJobs/LCOPayableRollup/  &&  unzip LCOPayableRollup_V5.zip
+
+9. Ensure that the folder is created and Remove the zip file
+
+	rm -f /root/DWJobs/LCOPayableRollup/LCOPayableRollup_V5.zip
+	ls -al /root/DWJobs/LCOPayableRollup/
+	
+9. Move to the folder LCOPayableRollupDeploy_V5
+cd /root/DWJobs/LCOPayableRollup/LCOPayableRollup_V5 && ls -alrt
+
+
+10. Edit the files LCORollup_Deploy.sh and LCORollup_Execute.sh. Change passwd and dbname values with root password and database name.
+
+sed -i 's/passwd="ITPezybilldmca@123"/passwd="ITPezybillskdigital@123"/; s/dbname="ezybill_dmca"/dbname="ezybill_skdigital"/' /root/DWJobs/LCOPayableRollup/LCOPayableRollup_V5/LCORollup_Deploy.sh
+
+sed -i 's/passwd="ITPezybilldmca@123"/passwd="ITPezybillskdigital@123"/; s/dbname="ezybill_dmca"/dbname="ezybill_skdigital"/' /root/DWJobs/LCOPayableRollup/LCOPayableRollup_V5/LCORollup_Execute.sh
+
+cat /root/DWJobs/LCOPayableRollup/LCOPayableRollup_V5/LCORollup_Deploy.sh
+cat  /root/DWJobs/LCOPayableRollup/LCOPayableRollup_V5/LCORollup_Execute.sh
+
+11. Execute the following command to deploy scripts.
+
+	cd /root/DWJobs/LCOPayableRollup/LCOPayableRollup_V5/ && sh LCORollup_Deploy.sh &
+	
+12. Execute the following command to execute scripts. Use & to execute in background.
+
+	cd /root/DWJobs/LCOPayableRollup/LCOPayableRollup_V5/ &&  sh LCORollup_Execute.sh &
+	
+13. Check the status of job completion using the following SQL
+
+	select * from eb_dw_jobrun where job_id = 2050 and start_dt_time >= date(now());
+	
+14. Log table can also be queried to get the status of job completion
+
+	select * from eb_db_log WHERE log_source = 'LCOPayableDailyRollup' and log_date >= now() order by 1;
+	
+	
+	

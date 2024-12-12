@@ -1,0 +1,58 @@
+select count(*) as acc from acc_payment_details;
+select count(*) as expiry from eb_auto_expiry_services;
+
+ps aux | grep php
+
+kill -9 
+
+show processlist
+
+service nginx status
+service httpd status
+service crond status
+
+service nginx stop
+service httpd stop
+service crond stop
+
+ALTER TABLE acc_payment_details add column parent_payment_id int(11) NOT NULL;
+ALTER TABLE customer add column ekyc_verfied tinyint(1) not null default 0;
+ALTER TABLE customer add column ekyc_address TEXT NOT NULL;
+ALTER TABLE customer modify fathers_name varchar(100);
+alter table eb_auto_expiry_services add column remarks varchar(50) default NULL;
+alter table eb_auto_expiry_services add column is_extended_in_cas tinyint(1) default 0;
+alter table eb_stock add column first_activation_date datetime default NULL;
+alter table eb_processes add column backend_setup_id int(11) NOT NULL default 0;
+alter table eb_processes add column priority tinyint(1) Default 0;
+alter table eb_pairing_logs add column employee_id int(11) default NULL;
+
+
+
+
+desc acc_payment_details;
+desc customer;
+desc eb_auto_expiry_services;
+desc eb_stock;
+desc eb_pairing_logs;
+
+set @tablename = 'acc_payment_details';
+set @columnname = 'parent_payment_id';
+SELECT * 
+FROM information_schema.columns 
+WHERE table_name in ('acc_payment_details','customer','eb_auto_expiry_services','eb_processes') 
+  AND column_name in ('parent_payment_id','ekyc_verfied','ekyc_address','fathers_name','remarks','is_extended_in_cas','first_activation_date','backend_setup_id','priority');
+
+select * from database_changes where patch_version='1.4.13.7' and status=0;
+
+update database_changes set  status=1 where id in () ;
+
+select * from patch_update_status;
+
+chmod -R 777 /var/www/html/apps/progs/cdcas.pl
+perl -i -pe 'y|\r||d' /var/www/html/apps/progs/cdcas.pl
+
+Pairing and Unpairing issue in eb_pairing_logs table employee_id column is missing
+desc eb_pairing_logs
+alter table eb_pairing_logs add column employee_id int(11) default NULL;
+
+
